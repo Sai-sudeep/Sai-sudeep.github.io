@@ -1,10 +1,14 @@
 title: Sai Sudeep Das
 description: PhD Scholar @ IIT Delhi | Computational Linguistics | Syntax, Phonetics & Odia NLP
+author: Sai Sudeep Das
+email: huz258337@iitd.ac.in
+
+# Theme
 theme: minima
-url: "https://Sai-sudeep.github.io"
-baseurl: ""
-author:
-  name: Sai Sudeep Das
-  email: huz258337@iitd.ac.in
-header_pages:
-  - about.md
+plugins:
+  - jekyll-feed
+
+# Custom CSS - Force Jekyll to use our stylesheet
+sass:
+  sass_dir: _sass
+  style: compressed
