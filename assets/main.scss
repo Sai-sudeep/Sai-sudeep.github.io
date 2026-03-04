@@ -13,7 +13,7 @@
 /* ======================================== */
 :root {
   /* Enhanced Color System */
-  --primary-color: #082567;
+  --primary-color: #082567; /* Sapphire Blue - KEEP THIS */
   --primary-hover: #061a4d;
   --primary-light: #1e3a8a;
   --secondary-color: #64748b;
@@ -24,17 +24,17 @@
   --error-color: #ef4444;
   
   /* Text Colors */
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
+  --text-primary: #000000; /* BLACK for body text */
+  --text-secondary: #333333; /* Dark gray for secondary text */
+  --text-muted: #666666; /* Medium gray for muted text */
   --text-inverse: #ffffff;
   
-  /* Background Colors */
-  --bg-light: #fefefe;
-  --bg-white: #ffffff;
+  /* Background Colors - FIXED */
+  --bg-light: #fafafa; /* OFF-WHITE for main background */
+  --bg-white: #ffffff; /* Pure white for cards */
   --bg-overlay: rgba(255, 255, 255, 0.1);
-  --bg-card: #ffffff;
-  --bg-hover: #f8f9fa;
+  --bg-card: #ffffff; /* Pure white for cards */
+  --bg-hover: #f5f5f5; /* Light gray for hover states */
   
   /* Border & Effects */
   --border-light: #e5e7eb;
@@ -106,8 +106,8 @@ body {
   font-family: var(--font-body);
   font-weight: var(--font-weight-normal);
   line-height: 1.6;
-  color: var(--text-primary);
-  background: var(--bg-light);
+  color: var(--text-primary); /* BLACK text */
+  background: var(--bg-light) !important; /* OFF-WHITE background - FIXED */
   text-align: justify;
   text-justify: inter-word;
   font-size: 1rem;
@@ -125,7 +125,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--font-weight-semibold);
   line-height: 1.3;
   margin: var(--space-xl) 0 var(--space-lg) 0;
-  color: var(--primary-color);
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE headings - KEEP */
   text-align: left;
   scroll-margin-top: var(--scroll-offset);
   letter-spacing: -0.025em;
@@ -186,6 +186,7 @@ h6 {
 p {
   margin-bottom: var(--space-md);
   line-height: 1.7;
+  color: var(--text-primary); /* BLACK body text */
 }
 
 p:last-child {
@@ -221,6 +222,7 @@ ul li, ol li {
   line-height: 1.6;
   text-align: justify;
   text-justify: inter-word;
+  color: var(--text-primary); /* BLACK list text */
 }
 
 /* ======================================== */
@@ -287,7 +289,7 @@ ul li, ol li {
 /* LAYOUT SYSTEM */
 /* ======================================== */
 .page-content {
-  background: var(--bg-light);
+  background: var(--bg-light) !important; /* OFF-WHITE - FIXED */
   min-height: calc(100vh - 200px);
   padding-top: var(--space-xl);
 }
@@ -399,7 +401,7 @@ ul li, ol li {
 .intro-box h1, 
 .intro-box h2 {
   font-family: var(--font-heading);
-  color: var(--text-inverse);
+  color: var(--text-inverse) !important; /* WHITE text in intro box */
   margin-bottom: var(--space-md);
   text-align: center !important;
   scroll-margin-top: unset;
@@ -427,6 +429,7 @@ ul li, ol li {
   text-align: center !important;
   position: relative;
   z-index: 1;
+  color: var(--text-inverse); /* WHITE text in intro box */
 }
 
 /* ======================================== */
@@ -446,7 +449,7 @@ ul li, ol li {
 .summary-text {
   font-size: 1.1rem;
   line-height: 1.7;
-  color: var(--text-primary);
+  color: var(--text-primary) !important; /* BLACK text */
   text-align: justify !important;
   text-justify: inter-word !important;
   margin: 0;
@@ -500,12 +503,13 @@ ul li, ol li {
 .nav-btn .btn-icon {
   font-size: 1.8rem;
   transition: var(--transition);
+  color: var(--text-primary);
 }
 
 .nav-btn .btn-text {
   font-size: 0.95rem;
   font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
+  color: var(--text-primary); /* BLACK text */
   transition: var(--transition);
 }
 
@@ -517,6 +521,7 @@ ul li, ol li {
 
 .nav-btn:hover .btn-icon {
   transform: scale(1.1);
+  color: var(--primary-color);
 }
 
 .nav-btn:hover .btn-text {
@@ -531,7 +536,7 @@ ul li, ol li {
 
 .nav-btn.active .btn-icon,
 .nav-btn.active .btn-text {
-  color: var(--text-inverse);
+  color: var(--text-inverse) !important;
 }
 
 /* Content Sections */
@@ -549,7 +554,7 @@ ul li, ol li {
 }
 
 .content-section h3 {
-  color: var(--primary-color);
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE headings */
   margin-top: 0;
   margin-bottom: var(--space-lg);
 }
@@ -558,7 +563,7 @@ ul li, ol li {
   text-align: justify;
   text-justify: inter-word;
   line-height: 1.7;
-  color: var(--text-secondary);
+  color: var(--text-primary) !important; /* BLACK text */
   margin-bottom: var(--space-md);
 }
 
@@ -587,7 +592,7 @@ ul li, ol li {
   text-align: justify !important;
   text-justify: inter-word !important;
   line-height: 1.7;
-  color: var(--text-secondary);
+  color: var(--text-primary) !important; /* BLACK text */
   margin-bottom: var(--space-md);
 }
 
@@ -600,6 +605,7 @@ ul li, ol li {
   text-justify: inter-word !important;
   line-height: 1.7;
   margin-bottom: var(--space-md);
+  color: var(--text-primary) !important; /* BLACK text */
 }
 
 .contact-info p:last-child {
@@ -616,6 +622,7 @@ ul li, ol li {
 .about-content p {
   text-align: justify !important;
   text-justify: inter-word !important;
+  color: var(--text-primary) !important; /* BLACK text */
 }
 
 @media (max-width: 768px) {
@@ -778,7 +785,7 @@ ul li, ol li {
 
 .timeline-organization {
   font-family: var(--font-body);
-  color: var(--text-primary);
+  color: var(--text-primary); /* BLACK text */
   font-weight: var(--font-weight-medium);
   margin-bottom: var(--space-md);
 }
@@ -795,7 +802,7 @@ ul li, ol li {
 
 .timeline-description p {
   margin-bottom: var(--space-sm);
-  color: var(--text-secondary);
+  color: var(--text-primary) !important; /* BLACK text */
   line-height: 1.6;
   text-align: justify;
   text-justify: inter-word;
@@ -811,7 +818,7 @@ ul li, ol li {
 }
 
 .timeline-description li {
-  color: var(--text-secondary);
+  color: var(--text-primary) !important; /* BLACK text */
   margin-bottom: var(--space-xs);
 }
 
@@ -854,7 +861,14 @@ ul li, ol li {
 .skill-category h4 {
   margin-top: 0;
   margin-bottom: var(--space-sm);
-  color: var(--primary-color);
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE headings */
+}
+
+.achievement-item p,
+.publication-item p,
+.project-item p,
+.skill-category p {
+  color: var(--text-primary) !important; /* BLACK body text */
 }
 
 .item-meta {
@@ -875,12 +889,12 @@ ul li, ol li {
 
 .publication-title {
   font-weight: var(--font-weight-semibold);
-  color: var(--primary-color);
+  color: var(--primary-color) !important;
   margin-bottom: var(--space-xs);
 }
 
 .publication-authors {
-  color: var(--text-secondary);
+  color: var(--text-primary) !important; /* BLACK text */
   font-size: 0.95rem;
   margin-bottom: var(--space-xs);
 }
@@ -923,14 +937,14 @@ ul li, ol li {
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--border-radius);
   font-size: 0.9rem;
-  color: var(--text-primary);
+  color: var(--text-primary) !important; /* BLACK text */
   border: 1px solid var(--border-light);
   transition: var(--transition);
 }
 
 .skill-list li:hover {
   background: var(--primary-color);
-  color: var(--text-inverse);
+  color: var(--text-inverse) !important;
   transform: translateY(-1px);
 }
 
@@ -939,7 +953,7 @@ ul li, ol li {
 /* ======================================== */
 
 .site-header {
-  background: var(--bg-white);
+  background: var(--bg-white) !important; /* Pure white background */
   border-bottom: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
   position: sticky;
@@ -952,7 +966,7 @@ ul li, ol li {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: var(--font-weight-bold);
-  color: var(--primary-color) !important;
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE - readable on white */
   text-decoration: none;
   transition: var(--transition);
 }
@@ -964,21 +978,21 @@ ul li, ol li {
 
 .site-nav .page-link {
   font-family: var(--font-heading);
-  color: var(--text-primary);
+  color: var(--text-primary) !important; /* BLACK text - readable on white */
   font-weight: var(--font-weight-medium);
   transition: var(--transition);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--border-radius);
-  background: var(--bg-white);
+  background: transparent;
 }
 
 .site-nav .page-link:hover { 
-  color: var(--primary-color);
-  background: var(--bg-hover);
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE on hover */
+  background: var(--bg-hover); /* Light gray background on hover */
 }
 
 .site-nav .page-link.current { 
-  color: var(--primary-color);
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE for current page */
   font-weight: var(--font-weight-semibold);
   background: var(--bg-hover);
 }
@@ -1010,7 +1024,7 @@ ul li, ol li {
 
 .post-list li h3 {
   font-family: var(--font-heading);
-  color: var(--primary-color);
+  color: var(--primary-color) !important; /* SAPPHIRE BLUE headings */
   margin: var(--space-sm) 0;
 }
 
@@ -1024,6 +1038,10 @@ ul li, ol li {
   text-decoration: underline;
 }
 
+.post-list li p {
+  color: var(--text-primary) !important; /* BLACK body text */
+}
+
 .post-meta {
   color: var(--text-muted);
   font-size: 0.9rem;
@@ -1031,7 +1049,7 @@ ul li, ol li {
 }
 
 .post-excerpt {
-  color: var(--text-secondary);
+  color: var(--text-primary) !important; /* BLACK body text */
   line-height: 1.6;
 }
 
@@ -1044,15 +1062,16 @@ ul li, ol li {
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light);
   border-left: 4px solid var(--primary-color);
+  color: var(--text-primary) !important; /* BLACK text */
 }
 
 /* ======================================== */
-/* ENHANCED FOOTER */
+/* ENHANCED FOOTER - FIXED CONTRAST */
 /* ======================================== */
 .site-footer {
   font-family: var(--font-heading);
-  background: var(--text-primary);
-  color: var(--text-inverse);
+  background: #2d3748 !important; /* Dark gray instead of text color */
+  color: var(--text-inverse) !important; /* WHITE text */
   padding: var(--space-2xl) 0 var(--space-xl);
   margin-top: var(--space-3xl);
   position: relative;
@@ -1077,29 +1096,52 @@ ul li, ol li {
 
 .site-footer h2, 
 .site-footer h3 {
-  color: var(--text-inverse);
+  color: var(--text-inverse) !important; /* WHITE headings in footer */
   text-align: center;
+  margin-bottom: var(--space-md);
 }
 
 .site-footer p {
   text-align: center;
   max-width: 600px;
   margin: 0 auto var(--space-md);
+  color: rgba(255, 255, 255, 0.9) !important; /* Light white for readability */
 }
 
 .site-footer a {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8) !important; /* Light white links */
   transition: var(--transition);
 }
 
 .site-footer a:hover {
-  color: var(--text-inverse);
+  color: var(--text-inverse) !important; /* Pure white on hover */
   text-decoration: underline;
 }
 
 .social-icons-footer {
   justify-content: center;
   margin: var(--space-lg) 0;
+}
+
+.site-footer .social-icons-footer .social-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.site-footer .social-icons-footer .social-icon:hover {
+  background: var(--primary-color);
+  color: var(--text-inverse);
+  border-color: var(--primary-color);
+}
+
+/* Footer copyright/bottom text */
+.site-footer .footer-text,
+.site-footer .copyright {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 0.9rem;
+  margin-top: var(--space-lg);
+  text-align: center;
 }
 
 /* ======================================== */
@@ -1174,6 +1216,13 @@ ul li, ol li {
   .timeline-item::before {
     left: calc(-1 * var(--space-xl) - 6px);
   }
+  
+  /* Mobile navigation fix */
+  .site-nav .page-link {
+    padding: var(--space-xs) var(--space-sm);
+    margin: var(--space-xs) 0;
+    display: block;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1197,6 +1246,10 @@ ul li, ol li {
   .site-footer {
     padding: var(--space-xl) 0 var(--space-lg);
   }
+  
+  .site-header {
+    padding: var(--space-sm) 0;
+  }
 }
 
 /* ======================================== */
@@ -1214,7 +1267,8 @@ ul li, ol li {
 
 /* Focus indicators for keyboard navigation */
 .nav-btn:focus,
-.social-icon:focus {
+.social-icon:focus,
+.site-nav .page-link:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }
@@ -1228,19 +1282,31 @@ ul li, ol li {
     --bg-card: #ffffff;
     --border-light: #000000;
   }
+  
+  .site-header {
+    border-bottom: 2px solid #000000;
+  }
 }
 
-/* Dark mode support (if needed) */
+/* Dark mode support (optional) */
 @media (prefers-color-scheme: dark) {
   :root {
-    --text-primary: #f8fafc;
+    --text-primary: #ffffff;
     --text-secondary: #cbd5e1;
-    --text-muted: #64748b;
+    --text-muted: #94a3b8;
     --bg-light: #0f172a;
     --bg-card: #1e293b;
     --bg-hover: #334155;
     --border-light: #334155;
     --border-medium: #475569;
+  }
+  
+  .site-header {
+    background: #1e293b !important;
+  }
+  
+  .site-nav .page-link {
+    color: #ffffff !important;
   }
 }
 
@@ -1254,6 +1320,14 @@ ul li, ol li {
   text-align: justify !important; 
   text-justify: inter-word !important; 
 }
+
+.text-black { color: var(--text-primary) !important; }
+.text-blue { color: var(--primary-color) !important; }
+.text-white { color: var(--text-inverse) !important; }
+
+.bg-white { background: var(--bg-white) !important; }
+.bg-light { background: var(--bg-light) !important; }
+.bg-card { background: var(--bg-card) !important; }
 
 .mb-0 { margin-bottom: 0 !important; }
 .mb-1 { margin-bottom: var(--space-sm) !important; }
@@ -1305,6 +1379,10 @@ ul li, ol li {
     color: black !important;
   }
   
+  p, li, span, div {
+    color: black !important;
+  }
+  
   a {
     color: black !important;
     text-decoration: underline !important;
@@ -1320,9 +1398,47 @@ ul li, ol li {
   }
   
   body {
-    background: white;
-    color: black;
+    background: white !important;
+    color: black !important;
   }
+  
+  .intro-box {
+    background: white !important;
+    color: black !important;
+    border: 2px solid black !important;
+  }
+  
+  .intro-box h1,
+  .intro-box h2,
+  .intro-box p {
+    color: black !important;
+  }
+}
+
+/* ======================================== */
+/* FINAL OVERRIDES FOR CONSISTENCY */
+/* ======================================== */
+
+/* Ensure all body text is BLACK */
+p, li, span, .text-content, .description, .content {
+  color: var(--text-primary) !important;
+}
+
+/* Ensure all headings are SAPPHIRE BLUE */
+h1, h2, h3, h4, h5, h6,
+.heading, .title, .section-title {
+  color: var(--primary-color) !important;
+}
+
+/* Ensure main content area is OFF-WHITE */
+.main, .content, .page-content, .wrapper {
+  background: var(--bg-light) !important;
+}
+
+/* Ensure cards are WHITE */
+.card, .content-section, .about-summary, .contact-info,
+.timeline-item, .achievement-item, .publication-item {
+  background: var(--bg-card) !important;
 }
 
 /* ======================================== */
