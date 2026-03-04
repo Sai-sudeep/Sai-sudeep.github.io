@@ -19,6 +19,72 @@ $text-color: #2c3e50;
 $light-gray: #f5f7fa;
 $border-color: #e1e5e9;
 
+// 🏠 ENHANCED NAVIGATION WITH HOME BUTTON
+.site-nav {
+  .page-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    transition: color 0.3s ease;
+    
+    // Home icon for home links
+    &[href="/"], 
+    &[href="/index.html"], 
+    &[href="index.html"],
+    &[href="{{ site.baseurl }}/"] {
+      &::before {
+        content: "🏠";
+        font-size: 1.1em;
+        margin-right: 0.3rem;
+      }
+    }
+    
+    // Hover effects
+    &:hover {
+      color: $brand-color !important;
+      text-decoration: none;
+    }
+  }
+  
+  // Navigation spacing
+  .page-link {
+    margin-left: 20px;
+    
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+  
+  // Mobile navigation enhancements
+  @media (max-width: 600px) {
+    .trigger {
+      .page-link {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #e8e8e8;
+        font-family: 'Libre Baskerville', serif !important;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        // Mobile home icon
+        &[href="/"], &[href="/index.html"] {
+          &::before {
+            content: "🏠";
+            font-size: 1.1em;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
 // Override body typography
 body {
   font-family: 'Courier New', 'Courier', monospace !important;
@@ -34,27 +100,18 @@ p {
   line-height: 1.6 !important;
 }
 
-// FORCE NAVIGATION FONT CHANGE
+// Site header styling
 .site-header {
   .site-title {
     font-family: 'Libre Baskerville', serif !important;
     font-weight: 700 !important;
   }
   
-  // Navigation links - FORCE LIBRE BASKERVILLE
   .site-nav {
-    .page-link {
-      font-family: 'Libre Baskerville', serif !important;
-      font-weight: 400 !important;
-      font-size: 16px !important;
-    }
-    
-    // Mobile menu
     .menu-icon {
       font-family: 'Libre Baskerville', serif !important;
     }
     
-    // Mobile menu items
     .trigger {
       .page-link {
         font-family: 'Libre Baskerville', serif !important;
@@ -148,7 +205,6 @@ p {
     }
   }
   
-  // Post excerpts in Courier
   p {
     font-family: 'Courier New', 'Courier', monospace !important;
     font-size: 15px !important;
@@ -178,7 +234,7 @@ p {
   font-family: 'Source Sans Pro', sans-serif !important;
 }
 
-// Heading Styles - ALL LIBRE BASKERVILLE WITH !IMPORTANT
+// Heading Styles - ALL LIBRE BASKERVILLE
 h1, h2, h3, h4, h5, h6 {
   color: $brand-color !important;
   font-family: 'Libre Baskerville', serif !important;
@@ -187,7 +243,6 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 2.2rem !important;
-  font-family: 'Libre Baskerville', serif !important;
 }
 
 h2 {
@@ -196,25 +251,18 @@ h2 {
   margin-top: 2.5rem;
   margin-bottom: 1.5rem;
   font-size: 1.8rem !important;
-  font-family: 'Libre Baskerville', serif !important;
 }
 
 h3 {
   font-size: 1.5rem !important;
   margin-top: 2rem;
   margin-bottom: 1rem;
-  font-family: 'Libre Baskerville', serif !important;
 }
 
 h4 {
   font-size: 1.3rem !important;
   margin-top: 1.5rem;
   margin-bottom: 0.8rem;
-  font-family: 'Libre Baskerville', serif !important;
-}
-
-h5, h6 {
-  font-family: 'Libre Baskerville', serif !important;
 }
 
 // Footer
@@ -222,7 +270,7 @@ h5, h6 {
   font-family: 'Source Sans Pro', sans-serif !important;
 }
 
-// About Page Styling
+// Page Content Styling
 .page-content {
   font-family: 'Courier New', 'Courier', monospace !important;
   
@@ -256,7 +304,7 @@ h5, h6 {
     }
   }
   
-  // Special highlight sections
+  // Highlight sections
   .highlight-section {
     padding: 2rem;
     background: $light-gray;
@@ -281,17 +329,12 @@ h5, h6 {
   margin-bottom: 2rem;
 }
 
-// Ensure all text content uses Courier
-.site-main {
+// Content Areas
+.site-main, .wrapper {
   font-family: 'Courier New', 'Courier', monospace !important;
 }
 
-// Make sure all content areas use proper typography
-.wrapper {
-  font-family: 'Courier New', 'Courier', monospace !important;
-}
-
-// Article content
+// Article Styling
 article {
   font-family: 'Courier New', 'Courier', monospace !important;
   
@@ -301,7 +344,6 @@ article {
     line-height: 1.6 !important;
   }
   
-  // But headings in articles should be Libre Baskerville
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Libre Baskerville', serif !important;
     font-weight: 700 !important;
@@ -309,7 +351,7 @@ article {
   }
 }
 
-// Lists and other text elements
+// Lists
 ul, ol {
   font-family: 'Courier New', 'Courier', monospace !important;
   font-size: 16px !important;
@@ -334,7 +376,7 @@ blockquote {
   padding: 1rem 1.5rem;
 }
 
-// Code blocks (already monospace, but ensure consistency)
+// Code blocks
 code, pre {
   font-family: 'Courier New', 'Courier', monospace !important;
 }
@@ -353,35 +395,6 @@ table {
   
   td {
     font-family: 'Courier New', 'Courier', monospace !important;
-  }
-}
-
-// ADDITIONAL NAVIGATION OVERRIDES - FORCE IT!
-nav {
-  a, .page-link {
-    font-family: 'Libre Baskerville', serif !important;
-  }
-}
-
-// Header navigation - multiple selectors to ensure it works
-header {
-  nav {
-    a {
-      font-family: 'Libre Baskerville', serif !important;
-    }
-  }
-  
-  .site-nav {
-    a, .page-link {
-      font-family: 'Libre Baskerville', serif !important;
-    }
-  }
-}
-
-// Catch-all for any navigation links
-.navigation, .nav, .menu {
-  a {
-    font-family: 'Libre Baskerville', serif !important;
   }
 }
 
@@ -417,12 +430,5 @@ header {
   
   h3 {
     font-size: 1.4rem !important;
-  }
-  
-  // Mobile navigation
-  .site-nav {
-    .page-link {
-      font-family: 'Libre Baskerville', serif !important;
-    }
   }
 }
