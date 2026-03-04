@@ -5,10 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
 // Font Variables (BEFORE minima import)
-$base-font-family: 'Libre Baskerville', 'Times New Roman', serif;
+$base-font-family: 'Courier New', 'Courier', monospace;
 $heading-font-family: 'Libre Baskerville', 'Times New Roman', serif;
-$base-font-size: 18px;
-$base-line-height: 1.7;
+$base-font-size: 16px;
+$base-line-height: 1.6;
 
 // Import Minima theme
 @import "minima";
@@ -21,15 +21,46 @@ $border-color: #e1e5e9;
 
 // Override body typography
 body {
-  font-family: 'Libre Baskerville', 'Times New Roman', serif;
-  font-size: 18px;
-  line-height: 1.7;
+  font-family: 'Courier New', 'Courier', monospace !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
   font-weight: 400;
 }
 
-// Ensure paragraphs use the body font
+// Ensure paragraphs use Courier
 p {
-  font-family: 'Libre Baskerville', 'Times New Roman', serif;
+  font-family: 'Courier New', 'Courier', monospace !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+// FORCE NAVIGATION FONT CHANGE
+.site-header {
+  .site-title {
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 700 !important;
+  }
+  
+  // Navigation links - FORCE LIBRE BASKERVILLE
+  .site-nav {
+    .page-link {
+      font-family: 'Libre Baskerville', serif !important;
+      font-weight: 400 !important;
+      font-size: 16px !important;
+    }
+    
+    // Mobile menu
+    .menu-icon {
+      font-family: 'Libre Baskerville', serif !important;
+    }
+    
+    // Mobile menu items
+    .trigger {
+      .page-link {
+        font-family: 'Libre Baskerville', serif !important;
+      }
+    }
+  }
 }
 
 // Intro Box Styling
@@ -44,14 +75,15 @@ p {
   h1 {
     margin-top: 0;
     color: $brand-color;
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 700 !important;
   }
   
   p {
     margin-bottom: 0;
-    font-size: 1.1rem;
+    font-size: 16px;
     line-height: 1.6;
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Courier New', 'Courier', monospace !important;
   }
 }
 
@@ -70,9 +102,9 @@ p {
     border-left: 5px solid $brand-color;
     border-radius: 5px;
     transition: all 0.35s ease;
-    font-size: 1.1rem;
-    font-weight: 500;
-    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    font-weight: 400;
+    font-family: 'Courier New', 'Courier', monospace !important;
     
     &:hover {
       background: #eef2f7;
@@ -102,23 +134,38 @@ p {
     margin: 0.5rem 0 1rem 0;
     font-size: 1.8rem;
     color: $brand-color;
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 700 !important;
     
     a {
       color: $brand-color;
       text-decoration: none;
+      font-family: 'Libre Baskerville', serif !important;
       
       &:hover {
         text-decoration: underline;
       }
     }
   }
+  
+  // Post excerpts in Courier
+  p {
+    font-family: 'Courier New', 'Courier', monospace !important;
+    font-size: 15px !important;
+  }
 }
 
 // Post Content
 .post-content {
-  font-family: 'Libre Baskerville', serif;
-  line-height: 1.7;
+  font-family: 'Courier New', 'Courier', monospace !important;
+  line-height: 1.6;
+  font-size: 16px;
+  
+  p, li, blockquote {
+    font-family: 'Courier New', 'Courier', monospace !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
 }
 
 // Post Metadata
@@ -128,14 +175,19 @@ p {
   font-style: italic;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif !important;
 }
 
-// Heading Styles
+// Heading Styles - ALL LIBRE BASKERVILLE WITH !IMPORTANT
 h1, h2, h3, h4, h5, h6 {
-  color: $brand-color;
-  font-family: 'Libre Baskerville', serif;
-  font-weight: 700;
+  color: $brand-color !important;
+  font-family: 'Libre Baskerville', serif !important;
+  font-weight: 700 !important;
+}
+
+h1 {
+  font-size: 2.2rem !important;
+  font-family: 'Libre Baskerville', serif !important;
 }
 
 h2 {
@@ -143,55 +195,64 @@ h2 {
   padding-bottom: 1rem;
   margin-top: 2.5rem;
   margin-bottom: 1.5rem;
+  font-size: 1.8rem !important;
+  font-family: 'Libre Baskerville', serif !important;
 }
 
-// Site Header
-.site-header {
-  .site-title {
-    font-family: 'Libre Baskerville', serif;
-    font-weight: 700;
-  }
-  
-  .site-nav .page-link {
-    font-family: 'Source Sans Pro', sans-serif;
-  }
+h3 {
+  font-size: 1.5rem !important;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-family: 'Libre Baskerville', serif !important;
+}
+
+h4 {
+  font-size: 1.3rem !important;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  font-family: 'Libre Baskerville', serif !important;
+}
+
+h5, h6 {
+  font-family: 'Libre Baskerville', serif !important;
 }
 
 // Footer
 .site-footer {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif !important;
 }
 
 // About Page Styling
 .page-content {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Courier New', 'Courier', monospace !important;
   
   .wrapper {
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Courier New', 'Courier', monospace !important;
   }
   
   p {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 18px;
-    line-height: 1.7;
+    font-family: 'Courier New', 'Courier', monospace !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
     margin-bottom: 1.5rem;
   }
   
-  h2, h3, h4 {
-    color: $brand-color;
-    font-family: 'Libre Baskerville', serif;
-    font-weight: 700;
+  h1, h2, h3, h4, h5, h6 {
+    color: $brand-color !important;
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 700 !important;
     margin-top: 2rem;
     margin-bottom: 1rem;
   }
   
   ul, ol {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 18px;
-    line-height: 1.7;
+    font-family: 'Courier New', 'Courier', monospace !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
     
     li {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
+      font-family: 'Courier New', 'Courier', monospace !important;
     }
   }
   
@@ -205,38 +266,122 @@ h2 {
     
     p {
       margin-bottom: 0;
+      font-family: 'Courier New', 'Courier', monospace !important;
     }
   }
 }
 
 // Page Header Styling
 .page-heading {
-  color: $brand-color;
-  font-family: 'Libre Baskerville', serif;
-  font-weight: 700;
+  color: $brand-color !important;
+  font-family: 'Libre Baskerville', serif !important;
+  font-weight: 700 !important;
   border-bottom: 3px solid $brand-color;
   padding-bottom: 1rem;
   margin-bottom: 2rem;
 }
 
-// Ensure all text content uses the same font
+// Ensure all text content uses Courier
 .site-main {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Courier New', 'Courier', monospace !important;
 }
 
 // Make sure all content areas use proper typography
 .wrapper {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Courier New', 'Courier', monospace !important;
 }
 
 // Article content
 article {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Courier New', 'Courier', monospace !important;
   
   p, li, blockquote {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 18px;
-    line-height: 1.7;
+    font-family: 'Courier New', 'Courier', monospace !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  
+  // But headings in articles should be Libre Baskerville
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 700 !important;
+    color: $brand-color !important;
+  }
+}
+
+// Lists and other text elements
+ul, ol {
+  font-family: 'Courier New', 'Courier', monospace !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  
+  li {
+    font-family: 'Courier New', 'Courier', monospace !important;
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Blockquotes
+blockquote {
+  font-family: 'Courier New', 'Courier', monospace !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  font-style: normal;
+  border-left: 4px solid $brand-color;
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+}
+
+// Code blocks (already monospace, but ensure consistency)
+code, pre {
+  font-family: 'Courier New', 'Courier', monospace !important;
+}
+
+// Table styling
+table {
+  font-family: 'Courier New', 'Courier', monospace !important;
+  font-size: 15px;
+  
+  th {
+    font-family: 'Libre Baskerville', serif !important;
+    font-weight: 700 !important;
+    background: $light-gray;
+    color: $brand-color;
+  }
+  
+  td {
+    font-family: 'Courier New', 'Courier', monospace !important;
+  }
+}
+
+// ADDITIONAL NAVIGATION OVERRIDES - FORCE IT!
+nav {
+  a, .page-link {
+    font-family: 'Libre Baskerville', serif !important;
+  }
+}
+
+// Header navigation - multiple selectors to ensure it works
+header {
+  nav {
+    a {
+      font-family: 'Libre Baskerville', serif !important;
+    }
+  }
+  
+  .site-nav {
+    a, .page-link {
+      font-family: 'Libre Baskerville', serif !important;
+    }
+  }
+}
+
+// Catch-all for any navigation links
+.navigation, .nav, .menu {
+  a {
+    font-family: 'Libre Baskerville', serif !important;
   }
 }
 
@@ -251,14 +396,33 @@ article {
   }
   
   body {
-    font-size: 16px;
+    font-size: 15px !important;
   }
   
   .page-content p {
-    font-size: 16px;
+    font-size: 15px !important;
   }
   
   article p, article li {
-    font-size: 16px;
+    font-size: 15px !important;
+  }
+  
+  h1 {
+    font-size: 1.9rem !important;
+  }
+  
+  h2 {
+    font-size: 1.6rem !important;
+  }
+  
+  h3 {
+    font-size: 1.4rem !important;
+  }
+  
+  // Mobile navigation
+  .site-nav {
+    .page-link {
+      font-family: 'Libre Baskerville', serif !important;
+    }
   }
 }
