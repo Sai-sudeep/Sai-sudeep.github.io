@@ -12,8 +12,8 @@
 // VARIABLES & COLORS
 // ========================================
 :root {
-  --primary-color: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary-color: #082567;
+  --primary-hover: #061a4d;
   --secondary-color: #64748b;
   --accent-color: #f59e0b;
   --text-primary: #1f2937;
@@ -48,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.3;
   margin-bottom: 1rem;
-  color: var(--primary-color); // Consistent heading color
+  color: var(--primary-color); // Now uses sapphire #082567
 }
 
 h1 { font-size: 2.25rem; }
@@ -90,7 +90,7 @@ h3 { font-size: 1.5rem; }
     max-height: 200px !important;
     border-radius: 50% !important;
     object-fit: cover !important;
-    border: 4px solid var(--primary-color) !important;
+    border: 4px solid var(--primary-color) !important; // Sapphire border
     box-shadow: var(--shadow-lg) !important;
     display: block !important;
     margin: 0 auto !important;
@@ -105,7 +105,7 @@ h3 { font-size: 1.5rem; }
 
 // Simplified Intro Box (Text Only)
 .intro-box {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)); // Sapphire gradient
   color: white;
   padding: 2.5rem 2rem;
   border-radius: var(--border-radius);
@@ -163,7 +163,7 @@ h3 { font-size: 1.5rem; }
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary-color) !important;
+  color: var(--primary-color) !important; // Sapphire site title
   text-decoration: none;
 }
 
@@ -186,12 +186,12 @@ h3 { font-size: 1.5rem; }
 // Section Links
 .section-link {
   font-family: var(--font-heading);
-  color: var(--primary-color);
+  color: var(--primary-color); // Sapphire section links
   text-decoration: none;
   transition: var(--transition);
   
   &:hover {
-    color: var(--primary-hover);
+    color: var(--primary-hover); // Darker sapphire on hover
     text-decoration: underline;
   }
 }
@@ -204,7 +204,7 @@ h3 { font-size: 1.5rem; }
     padding: 0.75rem;
     background: var(--bg-white);
     border-radius: var(--border-radius);
-    border-left: 4px solid var(--primary-color);
+    border-left: 4px solid var(--primary-color); // Sapphire left border
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
     
@@ -231,7 +231,7 @@ h3 { font-size: 1.5rem; }
 hr {
   border: none;
   height: 2px;
-  background: linear-gradient(90deg, var(--primary-color), transparent);
+  background: linear-gradient(90deg, var(--primary-color), transparent); // Sapphire gradient
   margin: 3rem 0;
 }
 
@@ -257,15 +257,15 @@ hr {
     
     h3 {
       font-family: var(--font-heading);
-      color: var(--primary-color);
+      color: var(--primary-color); // Sapphire post headings
       margin: 0.5rem 0;
       
       a {
-        color: var(--primary-color);
+        color: var(--primary-color); // Sapphire post links
         text-decoration: none;
         
         &:hover {
-          color: var(--primary-hover);
+          color: var(--primary-hover); // Darker sapphire on hover
         }
       }
     }
@@ -285,7 +285,7 @@ hr {
   
   a {
     font-family: var(--font-body);
-    color: var(--primary-color);
+    color: var(--primary-color); // Sapphire "View All" link
     text-decoration: none;
     font-weight: 500;
     
@@ -310,7 +310,7 @@ hr {
     margin-bottom: 0.5rem;
     
     a {
-      color: var(--primary-color);
+      color: var(--primary-color); // Sapphire contact links
       text-decoration: none;
       
       &:hover {
@@ -560,11 +560,11 @@ hr {
     transition: var(--transition);
     
     &:hover {
-      color: var(--primary-color);
+      color: var(--primary-color); // Sapphire nav hover
     }
     
     &.current {
-      color: var(--primary-color);
+      color: var(--primary-color); // Sapphire current nav
       font-weight: 600;
     }
   }
@@ -576,7 +576,7 @@ hr {
 a:focus,
 button:focus,
 .social-icon:focus {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--primary-color); // Sapphire focus outline
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -602,7 +602,7 @@ button:focus,
   min-height: 200px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
-  border: 4px solid var(--primary-color) !important;
+  border: 4px solid var(--primary-color) !important; // Sapphire border
   box-shadow: var(--shadow-lg) !important;
   display: block !important;
   margin: 0 auto !important;
