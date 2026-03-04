@@ -133,7 +133,7 @@ social_links:
   - { platform: facebook, user: saisudeep.das }
   - { platform: instagram, user: i_am_so_deep_ }
   - { platform: instagram, user: the_quintessential_inker }
-  - { platform: youtube, user: @saisudeepdas }
+  - { platform: youtube, user: saisudeepdas }
 
 # Build Performance
 lsi: false
