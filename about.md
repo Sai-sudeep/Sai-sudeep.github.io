@@ -6,7 +6,6 @@ permalink: /about/
 
 <div class="detail-page">
   <div class="detail-page-header">
-    <h1>About</h1>
     <p>Researcher in Computational Linguistics | Linguistics & Music</p>
   </div>
 
