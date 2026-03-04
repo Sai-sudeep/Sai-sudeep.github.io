@@ -515,7 +515,7 @@ ul, ol {
   }
 }
 
-// Content Sections
+// Content Sections - EXISTING CODE (around line 470)
 .content-sections {
   position: relative;
 }
@@ -546,6 +546,29 @@ ul, ol {
     }
   }
 }
+
+// 🎯 ADD YOUR NEW CSS CODE RIGHT HERE (after line ~500)
+// This is where the .social-icon class continuation begins
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius);
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  transition: var(--transition-bounce);
+  border: 1px solid var(--border-light);
+  
+  &:hover {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--shadow-md);
+  }
+}
+
 
 // ========================================
 // REST OF YOUR EXISTING STYLES (unchanged)
