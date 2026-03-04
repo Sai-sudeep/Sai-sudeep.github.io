@@ -162,6 +162,84 @@ h2 {
   font-family: 'Source Sans Pro', sans-serif;
 }
 
+// About Page Styling
+.page-content {
+  font-family: 'Libre Baskerville', serif;
+  
+  .wrapper {
+    font-family: 'Libre Baskerville', serif;
+  }
+  
+  p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  
+  h2, h3, h4 {
+    color: $brand-color;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  ul, ol {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  // Special highlight sections
+  .highlight-section {
+    padding: 2rem;
+    background: $light-gray;
+    border-left: 5px solid $brand-color;
+    border-radius: 5px;
+    margin: 2rem 0;
+    
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Page Header Styling
+.page-heading {
+  color: $brand-color;
+  font-family: 'Libre Baskerville', serif;
+  font-weight: 700;
+  border-bottom: 3px solid $brand-color;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+// Ensure all text content uses the same font
+.site-main {
+  font-family: 'Libre Baskerville', serif;
+}
+
+// Make sure all content areas use proper typography
+.wrapper {
+  font-family: 'Libre Baskerville', serif;
+}
+
+// Article content
+article {
+  font-family: 'Libre Baskerville', serif;
+  
+  p, li, blockquote {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+}
+
 // Responsive Design
 @media (max-width: 768px) {
   .research-areas {
@@ -173,6 +251,14 @@ h2 {
   }
   
   body {
+    font-size: 16px;
+  }
+  
+  .page-content p {
+    font-size: 16px;
+  }
+  
+  article p, article li {
     font-size: 16px;
   }
 }
