@@ -1,5 +1,7 @@
 ---
 layout: default
+title: Home
+permalink: /
 ---
 
 <div class="home">
@@ -10,24 +12,49 @@ layout: default
 
   <h2>Core Research Areas</h2>
   <ul class="research-areas">
-    <li>Computational Syntax</li>
-    <li>Data Quality Estimation</li>
-    <li>Acoustic Phonetics</li>
-    <li>Odia NLP & Corpus Tools</li>
-    <li>Musicology & Prosody</li>
-    <li>Low-Resource Languages</li>
+    <li><strong>Computational Syntax</strong> - Formal approaches to syntactic analysis and parsing</li>
+    <li><strong>Data Quality Estimation</strong> - Metrics and methods for corpus validation</li>
+    <li><strong>Acoustic Phonetics</strong> - Speech signal processing and phonetic analysis</li>
+    <li><strong>Odia NLP & Corpus Tools</strong> - Language resources for Odia language processing</li>
+    <li><strong>Musicology & Prosody</strong> - Intersection of music theory and linguistic rhythm</li>
+    <li><strong>Low-Resource Languages</strong> - NLP techniques for underrepresented languages</li>
   </ul>
 
   <hr>
 
-  <h2>Research Insights</h2>
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: '%b %-d, %Y' }}</span>
-        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-        <p>{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
-      </li>
-    {% endfor %}
-  </ul>
+  <h2>Latest Research Insights</h2>
+  {% if site.posts.size > 0 %}
+    <ul class="post-list">
+      {% for post in site.posts limit: 5 %}
+        <li>
+          <span class="post-meta">{{ post.date | date: '%b %-d, %Y' }}</span>
+          <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
+          <p>{{ post.excerpt | strip_html | truncatewords: 25 | strip }}</p>
+          <a href="{{ post.url | relative_url }}" class="read-more">Read more →</a>
+        </li>
+      {% endfor %}
+    </ul>
+    
+    {% if site.posts.size > 5 %}
+      <div class="view-all-posts">
+        <a href="{{ '/blog/' | relative_url }}" class="btn-outline">View All Posts</a>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="no-posts">
+      <p><em>Research insights coming soon. Stay tuned for updates on computational linguistics and NLP research!</em></p>
+    </div>
+  {% endif %}
+
+  <hr>
+
+  <div class="contact-section">
+    <h2>Connect & Collaborate</h2>
+    <p>Interested in computational linguistics research or collaboration? Feel free to reach out:</p>
+    <div class="contact-info">
+      <p>📧 <strong>Email:</strong> <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+      <p>🎓 <strong>Affiliation:</strong> PhD Scholar @ IIT Delhi</p>
+      <p>🔬 <strong>Focus:</strong> Computational Linguistics, Syntax & Phonetics</p>
+    </div>
+  </div>
 </div>
