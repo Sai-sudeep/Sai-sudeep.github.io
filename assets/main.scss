@@ -1545,6 +1545,14 @@ span:not(.intro-box span):not(.site-footer span),
   color: #000000 !important;
 }
 
+/* INTRO BOX STRONG FIX - must come last to win specificity */
+.intro-box p strong,
+.intro-box strong {
+  color: #ffffff !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
 /* ======================================== */
 /* END OF STYLESHEET */
 /* ======================================== */
