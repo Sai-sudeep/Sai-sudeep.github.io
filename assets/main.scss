@@ -414,10 +414,12 @@ ul li, ol li {
   outline-offset: 3px;
 }
 
-/* Enhanced Intro Box with Gradient Effects */
+/* ======================================== */
+/* FIXED INTRO BOX - NO WHITE BACKGROUND ON TEXT */
+/* ======================================== */
 .intro-box {
-  background: linear-gradient(135deg, #082567 0%, #061a4d 100%) !important; /* FORCE SAPPHIRE GRADIENT */
-  color: #ffffff !important; /* FORCE WHITE TEXT */
+  background: linear-gradient(135deg, #082567 0%, #061a4d 100%) !important; /* SAPPHIRE GRADIENT - KEEP */
+  color: #ffffff !important; /* WHITE TEXT - KEEP */
   padding: var(--space-2xl);
   border-radius: var(--border-radius-xl);
   margin-bottom: var(--space-2xl);
@@ -439,10 +441,17 @@ ul li, ol li {
   pointer-events: none;
 }
 
+/* INTRO BOX TEXT - NO WHITE BACKGROUNDS - FIXED */
 .intro-box h1, 
-.intro-box h2 {
+.intro-box h2,
+.intro-box h3,
+.intro-box h4,
+.intro-box h5,
+.intro-box h6 {
   font-family: var(--font-heading);
-  color: #ffffff !important; /* FORCE WHITE text in intro box */
+  color: #ffffff !important; /* WHITE TEXT */
+  background: transparent !important; /* NO WHITE BACKGROUND */
+  background-color: transparent !important; /* NO WHITE BACKGROUND */
   margin-bottom: var(--space-md);
   text-align: center !important;
   scroll-margin-top: unset;
@@ -470,7 +479,15 @@ ul li, ol li {
   text-align: center !important;
   position: relative;
   z-index: 1;
-  color: #ffffff !important; /* FORCE WHITE text in intro box */
+  color: #ffffff !important; /* WHITE TEXT */
+  background: transparent !important; /* NO WHITE BACKGROUND */
+  background-color: transparent !important; /* NO WHITE BACKGROUND */
+}
+
+/* ALL ELEMENTS IN INTRO BOX - NO WHITE BACKGROUNDS */
+.intro-box * {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ======================================== */
@@ -1112,11 +1129,11 @@ ul li, ol li {
 }
 
 /* ======================================== */
-/* ENHANCED FOOTER - FIXED CONTRAST */
+/* ENHANCED FOOTER - FIXED CONTRAST - BLUE BACKGROUND */
 /* ======================================== */
 .site-footer {
   font-family: var(--font-heading);
-  background: #2d3748 !important; /* FORCE DARK GRAY background */
+  background: #082567 !important; /* FORCE BLUE BACKGROUND */
   color: #ffffff !important; /* FORCE WHITE text */
   padding: var(--space-2xl) 0 var(--space-xl);
   margin-top: var(--space-3xl);
@@ -1131,7 +1148,7 @@ ul li, ol li {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #082567, transparent);
+  background: linear-gradient(90deg, transparent, #f59e0b, transparent);
 }
 
 .site-footer .wrapper {
@@ -1140,9 +1157,15 @@ ul li, ol li {
   padding: 0 var(--space-md);
 }
 
+.site-footer h1,
 .site-footer h2, 
-.site-footer h3 {
+.site-footer h3,
+.site-footer h4,
+.site-footer h5,
+.site-footer h6 {
   color: #ffffff !important; /* FORCE WHITE headings in footer */
+  background: transparent !important; /* NO WHITE BACKGROUND */
+  background-color: transparent !important; /* NO WHITE BACKGROUND */
   text-align: center;
   margin-bottom: var(--space-md);
 }
@@ -1152,6 +1175,8 @@ ul li, ol li {
   max-width: 600px;
   margin: 0 auto var(--space-md);
   color: rgba(255, 255, 255, 0.9) !important; /* FORCE LIGHT WHITE for readability */
+  background: transparent !important; /* NO WHITE BACKGROUND */
+  background-color: transparent !important; /* NO WHITE BACKGROUND */
 }
 
 .site-footer a {
@@ -1176,9 +1201,9 @@ ul li, ol li {
 }
 
 .site-footer .social-icons-footer .social-icon:hover {
-  background: #082567 !important; /* FORCE SAPPHIRE BLUE on hover */
+  background: rgba(255, 255, 255, 0.2) !important; /* FORCE LIGHTER TRANSPARENT WHITE on hover */
   color: #ffffff !important; /* FORCE WHITE text on hover */
-  border-color: #082567 !important; /* FORCE SAPPHIRE BLUE border on hover */
+  border-color: rgba(255, 255, 255, 0.4) !important; /* FORCE LIGHTER TRANSPARENT WHITE border on hover */
 }
 
 /* Footer copyright/bottom text */
@@ -1188,6 +1213,12 @@ ul li, ol li {
   font-size: 0.9rem;
   margin-top: var(--space-lg);
   text-align: center;
+}
+
+/* ALL ELEMENTS IN FOOTER - NO WHITE BACKGROUNDS */
+.site-footer * {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ======================================== */
@@ -1474,16 +1505,24 @@ div {
   background: #ffffff !important;
 }
 
-/* FORCE SAPPHIRE BLUE ON HEADINGS */
-h1, h2, h3, h4, h5, h6,
+/* FORCE SAPPHIRE BLUE ON HEADINGS (EXCEPT IN INTRO BOX AND FOOTER) */
+h1:not(.intro-box h1):not(.site-footer h1), 
+h2:not(.intro-box h2):not(.site-footer h2), 
+h3:not(.intro-box h3):not(.site-footer h3), 
+h4:not(.intro-box h4):not(.site-footer h4), 
+h5:not(.intro-box h5):not(.site-footer h5), 
+h6:not(.intro-box h6):not(.site-footer h6),
 .heading, .title, .section-title,
 .timeline-header strong,
 .publication-title {
   color: #082567 !important;
 }
 
-/* FORCE BLACK ON ALL BODY TEXT */
-p, li, span, .text-content, .description,
+/* FORCE BLACK ON ALL BODY TEXT (EXCEPT IN INTRO BOX AND FOOTER) */
+p:not(.intro-box p):not(.site-footer p), 
+li:not(.intro-box li):not(.site-footer li), 
+span:not(.intro-box span):not(.site-footer span), 
+.text-content, .description,
 .timeline-description p,
 .justified-text,
 .summary-text,
