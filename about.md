@@ -13,7 +13,7 @@ permalink: /about/
     <!-- Header Section -->
     <div class="intro-box">
       <h2>🎓 Sai Sudeep Das</h2>
-      <p><strong>Doctoral Researcher in Computational Linguistics</strong> at IIT Delhi<br>
+      <p>Doctoral Researcher in Computational Linguistics at IIT Delhi<br>
          Former Language Team Lead at AI4Bharat, IIT Madras</p>
     </div>
 
