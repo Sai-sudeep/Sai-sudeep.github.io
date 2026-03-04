@@ -44,7 +44,11 @@ permalink: /about/
     </p>
 
     <p class="justified-text">
-      My musical experiences include performances at venues such as the Sambad Sa Re Ga Ma competition, state-level competitions organized by the Department of Odia Language, Literature & Culture, and the 48th All India Competitions in Music and Dance in Hyderabad. These opportunities have enriched my artistic development and enhanced my research interests in computational musicology, vocal acoustics, and the intersection of music and language processing.
+      My formal musical education includes a Master of Performing Arts in Hindustani Vocal Music from the University of Hyderabad (2022-2024) and a Visharad in Odissi Music from Pracheen Kala Kendra, Chandigarh (2013-2014). These qualifications complement my linguistic studies and provide a structured foundation for my interdisciplinary research interests.
+    </p>
+
+    <p class="justified-text">
+      My musical experiences include performances at various platforms such as Sambad Sa Re Ga Ma (Sambad, Odisha), state-level competitions organized by the Department of Odia Language, Literature & Culture (Government of Odisha), annual concerts at Harihar Sastriya Sangeet Pratisthan (Bhubaneswar), the 48th All India Competitions in Music and Dance (Navya Nataka Samiti, Hyderabad), and Naad Nartan National Seminar and Concert 2023 (Jaipur). These opportunities have enriched my artistic development and enhanced my research interests in computational musicology, vocal acoustics, and the intersection of music and language processing.
     </p>
 
     <h3>🛠️ Technical Skills & Innovation</h3>
