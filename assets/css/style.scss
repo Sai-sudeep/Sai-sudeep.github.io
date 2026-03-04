@@ -1,7 +1,7 @@
 ---
 ---
 
+@import "minima/custom-variables";    ← Variables FIRST
+@import "minima/custom-styles";       ← Then styles using them
 @import "minima/skins/{{ site.minima.skin | default: 'classic' }}";
 @import "minima/initialize";
-@import "minima/custom-variables";
-@import "minima/custom-styles";
