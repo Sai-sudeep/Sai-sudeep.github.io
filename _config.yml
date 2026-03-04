@@ -1,4 +1,5 @@
-# Site settings
+# Your existing config stays the same, just ADD this line:
+
 title: Sai Sudeep Das
 description: PhD Scholar @ IIT Delhi | Computational Linguistics | Syntax, Phonetics & Odia NLP
 author: Sai Sudeep Das
@@ -16,27 +17,16 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
-# Navigation - FIXED: Empty array prevents theme conflicts
+# 🔧 ADD THIS LINE TO DISABLE DEFAULT THEME NAVIGATION:
 header_pages: []
 
-# Custom CSS configuration
+# Rest of your config unchanged...
 sass:
   sass_dir: _sass
   style: compressed
 
-# Site URL
 url: "https://sai-sudeep.github.io"
 baseurl: ""
-
-# Show excerpts
 show_excerpts: true
-
-# Timezone
 timezone: Asia/Kolkata
-
-# Encoding
 encoding: utf-8
-
-# Minima customization
-minima:
-  skin: classic
