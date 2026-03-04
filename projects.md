@@ -56,7 +56,7 @@ permalink: /projects/
         <span class="timeline-date">2022</span>
       </div>
       <div class="timeline-description">
-        <p>Development of syntactic annotation framework for Odia language computational analysis (Masters Project).</p>
+        <p>Development of syntactic annotation framework for Odia language computational analysis (Master’s Final Project).</p>
       </div>
     </div>
 
@@ -66,7 +66,7 @@ permalink: /projects/
         <span class="timeline-date">2021</span>
       </div>
       <div class="timeline-description">
-        <p>Concepts of morphological compounding patterns in Odia language structure (Masters Coursework project).</p>
+        <p>Concepts of morphological compounding patterns in Odia language structure (Master’s Coursework project).</p>
       </div>
     </div>
   </div>
