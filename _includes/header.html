@@ -1,8 +1,11 @@
 <header class="site-header" role="banner">
   <div class="wrapper">
+    <!-- Site Title - Preserved exactly as requested -->
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">Sai Sudeep Das</a>
 
+    <!-- Navigation Menu -->
     <nav class="site-nav">
+      <!-- Mobile Menu Trigger - Preserved functionality -->
       <input type="checkbox" id="nav-trigger" class="nav-trigger" />
       <label for="nav-trigger">
         <span class="menu-icon">
@@ -12,10 +15,15 @@
         </span>
       </label>
 
+      <!-- Navigation Links -->
       <div class="trigger">
-        <!-- 🔧 REMOVED HOME ICON - Just clean text links -->
         <a class="page-link" href="{{ "/" | relative_url }}">Home</a>
         <a class="page-link" href="{{ "/about/" | relative_url }}">About Me</a>
+        
+        <!-- Optional: Add more navigation links -->
+        <!-- <a class="page-link" href="{{ "/research/" | relative_url }}">Research</a> -->
+        <!-- <a class="page-link" href="{{ "/publications/" | relative_url }}">Publications</a> -->
+        <!-- <a class="page-link" href="{{ "/blog/" | relative_url }}">Blog</a> -->
       </div>
     </nav>
   </div>
