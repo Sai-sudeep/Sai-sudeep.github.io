@@ -1,32 +1,149 @@
-# Your existing config stays the same, just ADD this line:
+# ═══════════════════════════════════════════════════════════════════════════════
+#                          SAI SUDEEP DAS - ACADEMIC PORTFOLIO
+# ═══════════════════════════════════════════════════════════════════════════════
 
-title: Sai Sudeep Das
-description: PhD Researcher @ IIT Delhi | Computational Linguistics | Indic and Odia NLP, Linguistics, Syntax, Phonetics, & Musicology 
-author: Sai Sudeep Das
-email: 	sai.sudeep.das@hss.iitd.ac.in
+# Site Identity
+title: "Sai Sudeep Das"
+description: "PhD Researcher @ IIT Delhi | Computational Linguistics | Indic and Odia NLP, Linguistics, Syntax, Phonetics, & Musicology"
+author:
+  name: "Sai Sudeep Das"
+  email: "sai.sudeep.das@hss.iitd.ac.in"
+  twitter: "sai_sudeep"  # Add your Twitter handle
+  github: "sai-sudeep"   # Add your GitHub username
 
-# Build settings
+# Site URL Configuration
+url: "https://sai-sudeep.github.io"
+baseurl: ""
+repository: "sai-sudeep/sai-sudeep.github.io"
+
+# Build Settings
 markdown: kramdown
 highlighter: rouge
 permalink: pretty
+paginate: 5
+paginate_path: "/page/:num/"
 
-# Theme
+# Theme & Plugins
 theme: minima
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-include-cache
 
-# 🔧 ADD THIS LINE TO DISABLE DEFAULT THEME NAVIGATION:
-header_pages: []
+# Minima Theme Configuration
+minima:
+  skin: classic
+  social_links:
+    twitter: sai_sudeep
+    github: sai-sudeep
+    linkedin: "sai-sudeep-das-1946ab130"  # Add your LinkedIn
+    youtube: "saisudeepdas"  # Add your YouTube
+  date_format: "%B %Y"
+  show_excerpts: true
 
-# Rest of your config unchanged...
+# Navigation Control - Custom header pages
+header_pages:
+  - index.md
+  - about.md
+  - research.md
+  - qualifications.md
+  - experience.md
+  - projects.md
+  - skills.md
+  - certifications.md
+
+# Collections for Custom Pages
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+  research:
+    output: true
+    permalink: /research/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: page
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+      social_share: true
+
+# Sass Configuration
 sass:
-  sass_dir: _sass
+  sass_dir: assets
   style: compressed
+  sourcemap: never
 
-url: "https://sai-sudeep.github.io"
-baseurl: ""
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Site-wide Settings
 show_excerpts: true
-timezone: Asia/Kolkata
-encoding: utf-8
+timezone: "Asia/Kolkata"
+lang: "en"
+encoding: "utf-8"
+
+# SEO & Social Media
+google_analytics: G-XXXXXXXXXX  # Add your GA4 ID when ready
+twitter_username: sai_sudeep
+github_username: sai-sudeep
+linkedin_username: sai-sudeep-das-1946ab130
+
+# Custom Academic Variables
+academic:
+  institution: "Indian Institute of Technology Delhi"
+  department: "Humanities and Social Sciences"
+  program: "PhD Computational Linguistics"
+  languages:
+    - "Odia (Native)"
+    - "English (Professional)"
+    - "Hindi (Professional)"
+    - "Bengali (Elementary)"
+    - "Sanskrit (Limited Working)"
+  research_areas:
+    - "Computational Syntax"
+    - "Data Quality Estimation"
+    - "Acoustic Phonetics"
+    - "Computational Musicology"
+    - "Odia NLP"
+    - "Low-Resource Languages"
+
+# Contact Information
+email: sai.sudeep.das@hss.iitd.ac.in
+
+# Social Media Links
+social_links:
+  - { platform: linkedin, user: sai-sudeep-das-1946ab130 }
+  - { platform: facebook, user: saisudeep.das }
+  - { platform: instagram, user: i_am_so_deep_ }
+  - { platform: instagram, user: the_quintessential_inker }
+  - { platform: youtube, user: saisudeepdas }
+
+# Build Performance
+lsi: false
+quiet: false
+incremental: false
+
+# Pagination
+paginate: 5
+paginate_path: "/page/:num/"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                    PRODUCTION READY FOR GITHUB PAGES
+# ═══════════════════════════════════════════════════════════════════════════════
