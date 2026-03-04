@@ -166,7 +166,7 @@ h6 { font-size: 1rem; font-weight: 500; }
     font-family: var(--font-heading);
     color: white;
     margin-bottom: 1rem;
-    text-align: center;
+    text-align: center !important;
   }
   
   h1 { 
@@ -185,7 +185,7 @@ h6 { font-size: 1rem; font-weight: 500; }
     opacity: 0.95;
     font-size: 1.1rem;
     line-height: 1.6;
-    text-align: center;
+    text-align: center !important;
   }
 }
 
@@ -246,7 +246,7 @@ h6 { font-size: 1rem; font-weight: 500; }
   p {
     font-family: var(--font-body);
     margin-bottom: 0.5rem;
-    text-align: justify;
+    text-align: justify !important;
     text-justify: inter-word;
     hyphens: auto;
     -webkit-hyphens: auto;
@@ -452,6 +452,7 @@ h6 { font-size: 1rem; font-weight: 500; }
     font-family: var(--font-heading);
     color: white;
     margin-bottom: 1rem;
+    text-align: left;
   }
   
   .wrapper {
@@ -459,6 +460,54 @@ h6 { font-size: 1rem; font-weight: 500; }
     grid-template-columns: 2fr 1fr;
     gap: 3rem;
     align-items: start;
+  }
+  
+  // ========================================
+  // FOOTER TEXT CENTERING
+  // ========================================
+  .footer-info,
+  .site-info {
+    text-align: center !important;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    grid-column: 1 / -1;
+    
+    p {
+      font-family: var(--font-heading);
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center !important;
+      
+      &:last-child {
+        margin-bottom: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  // Target footer paragraphs that contain copyright or tagline
+  p {
+    font-family: var(--font-heading);
+    
+    // Center copyright and tagline text
+    &:contains("©"),
+    &:contains("All rights reserved"),
+    &:contains("Researcher"),
+    &:contains("Linguist"),
+    &:contains("Music Enthusiast") {
+      text-align: center !important;
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+  
+  // Center the last few paragraphs in footer
+  p:nth-last-child(-n+2) {
+    text-align: center !important;
+    margin-top: 1rem;
+    grid-column: 1 / -1;
   }
 }
 
@@ -624,9 +673,23 @@ button:focus,
     margin-top: 0.5rem; 
   }
   
-  .site-footer .wrapper { 
-    grid-template-columns: 1fr; 
-    gap: 2rem; 
+  .site-footer {
+    .wrapper { 
+      grid-template-columns: 1fr; 
+      gap: 2rem; 
+    }
+    
+    .footer-info,
+    .site-info {
+      text-align: center !important;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+    }
+    
+    p:nth-last-child(-n+2) {
+      text-align: center !important;
+      margin-top: 1rem;
+    }
   }
   
   .footer-contact .contact-grid { 
