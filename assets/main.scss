@@ -462,60 +462,9 @@ ul, ol {
   }
 }
 
-.nav-btn {
-  background: var(--bg-card);
-  border: 2px solid var(--border-light);
-  border-radius: var(--border-radius-lg);
-  padding: var(--space-md);
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: var(--font-body);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  text-align: center;
-  box-shadow: var(--shadow-xs);
-  
-  .btn-icon {
-    font-size: 1.8rem;
-    transition: var(--transition);
-  }
-  
-  .btn-text {
-    font-size: 0.95rem;
-    font-weight: var(--font-weight-medium);
-    color: var(--text-primary);
-    transition: var(--transition);
-  }
-  
-  &:hover {
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    
-    .btn-icon {
-      transform: scale(1.1);
-    }
-    
-    .btn-text {
-      color: var(--primary-color);
-    }
-  }
-  
-  &.active {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    color: var(--text-inverse);
-    
-    .btn-icon,
-    .btn-text {
-      color: var(--text-inverse);
-    }
-  }
-}
+// ... nav-btn styles ...
 
-// Content Sections - EXISTING CODE (around line 470)
+// Content Sections
 .content-sections {
   position: relative;
 }
@@ -546,6 +495,80 @@ ul, ol {
     }
   }
 }
+
+// 🎯 ADD YOUR NEW CSS CODE RIGHT HERE (after the .content-section block ends)
+
+// Fix Summary Section Justification
+.about-summary {
+  background: var(--bg-card);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  
+  .summary-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    text-align: justify !important; // Force justification
+    text-justify: inter-word !important;
+    margin: 0;
+  }
+}
+
+// Fix Contact Section Justification
+.contact-info {
+  @extend .card;
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  
+  .justified-text {
+    text-align: justify !important; // Force justification
+    text-justify: inter-word !important;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Also handle any regular p tags in contact section
+  p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// General fix for any remaining non-justified text in about sections
+.about-content {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  
+  // Force all paragraph text to be justified
+  p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0 var(--space-sm);
+  }
+}
+
+// ========================================
+// REST OF YOUR EXISTING STYLES (Advanced Card System, etc...)
+// ========================================
+
 
 // 🎯 ADD YOUR NEW CSS CODE RIGHT HERE (after line ~500)
 // This is where the .social-icon class continuation begins
