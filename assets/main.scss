@@ -485,9 +485,15 @@ ul li, ol li {
 }
 
 /* ALL ELEMENTS IN INTRO BOX - NO WHITE BACKGROUNDS */
-.intro-box * {
+.intro-box *,
+.intro-box div,
+.intro-box span,
+.intro-box strong,
+.intro-box em,
+.intro-box br {
   background: transparent !important;
   background-color: transparent !important;
+  color: #ffffff !important;
 }
 
 /* ======================================== */
@@ -1216,7 +1222,11 @@ ul li, ol li {
 }
 
 /* ALL ELEMENTS IN FOOTER - NO WHITE BACKGROUNDS */
-.site-footer * {
+.site-footer *,
+.site-footer div,
+.site-footer span,
+.site-footer section,
+.site-footer article {
   background: transparent !important;
   background-color: transparent !important;
 }
@@ -1475,7 +1485,7 @@ ul li, ol li {
 /* FINAL NUCLEAR OVERRIDES */
 /* ======================================== */
 
-/* FORCE LIGHT MODE ON EVERYTHING */
+/* FORCE LIGHT MODE ON EVERYTHING EXCEPT FOOTER AND INTRO BOX */
 html,
 body,
 main,
@@ -1485,13 +1495,18 @@ main,
 .wrapper,
 .container,
 section,
-article,
-div {
+article {
   background: #fafafa !important;
   color: #000000 !important;
 }
 
-/* FORCE WHITE ON CARDS */
+/* Apply off-white background to divs, but NOT inside footer or intro-box */
+div:not(.site-footer):not(.site-footer *):not(.intro-box):not(.intro-box *) {
+  background: #fafafa !important;
+  color: #000000 !important;
+}
+
+/* FORCE WHITE ON CARDS - these are more specific and override the div rule above */
 .card,
 .content-section,
 .about-summary,
