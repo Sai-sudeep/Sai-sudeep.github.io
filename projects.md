@@ -16,7 +16,7 @@ permalink: /projects/
         <span class="timeline-date">2025</span>
       </div>
       <div class="timeline-description">
-        <p>Comprehensive analysis of the Odia C4 corpus using mixed-method approaches for corpus linguistics research and validation.</p>
+        <p>Comprehensive analysis of the Odia C4 corpus using mixed-method approaches for corpus linguistics research and validation (PhD Coursework project).</p>
       </div>
     </div>
 
@@ -26,7 +26,7 @@ permalink: /projects/
         <span class="timeline-date">2025</span>
       </div>
       <div class="timeline-description">
-        <p>Phonetic and spectral analysis of vocal techniques in Indian classical music genres using advanced signal processing methods.</p>
+        <p>Phonetic and spectral analysis of vocal techniques in Indian classical music genres using advanced signal processing methods (PhD Coursework project).</p>
       </div>
     </div>
 
@@ -36,7 +36,7 @@ permalink: /projects/
         <span class="timeline-date">2025</span>
       </div>
       <div class="timeline-description">
-        <p>Comparative syntactic study of differential object marking patterns in Odia and Hindi languages.</p>
+        <p>Comparative syntactic study of differential object marking patterns in Odia and Hindi languages (PhD Coursework project).</p>
       </div>
     </div>
 
@@ -56,7 +56,7 @@ permalink: /projects/
         <span class="timeline-date">2022</span>
       </div>
       <div class="timeline-description">
-        <p>Development of syntactic annotation framework for Odia language computational analysis.</p>
+        <p>Development of syntactic annotation framework for Odia language computational analysis (Masters Project).</p>
       </div>
     </div>
 
@@ -66,7 +66,7 @@ permalink: /projects/
         <span class="timeline-date">2021</span>
       </div>
       <div class="timeline-description">
-        <p>Concepts of morphological compounding patterns in Odia language structure.</p>
+        <p>Concepts of morphological compounding patterns in Odia language structure (Masters Coursework project).</p>
       </div>
     </div>
   </div>
