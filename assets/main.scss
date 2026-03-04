@@ -44,7 +44,7 @@ h2 { font-size: 1.875rem; }
 h3 { font-size: 1.5rem; }
 
 // ========================================
-// IMAGE COMPONENTS (Add this to your existing CSS)
+// IMAGE COMPONENTS
 // ========================================
 
 // Cover Image at Top
@@ -77,7 +77,7 @@ h3 { font-size: 1.5rem; }
 .intro-content {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .intro-text {
@@ -104,22 +104,21 @@ h3 { font-size: 1.5rem; }
 }
 
 .profile-image {
-  width: 90px !important;
-  height: 90px !important;
-  max-width: 90px !important;
-  max-height: 90px !important;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-sm);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-md);
+  display: block;
 }
 
-// Responsive adjustments
+// Responsive adjustments for profile image
 @media (max-width: 768px) {
   .intro-content {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
+    gap: 1.5rem;
   }
   
   .intro-text h1 {
@@ -127,10 +126,8 @@ h3 { font-size: 1.5rem; }
   }
   
   .profile-image {
-    width: 60px !important;
-    height: 60px !important;
-    max-width: 60px !important;
-    max-height: 60px !important;
+    width: 100px;
+    height: 100px;
   }
   
   .cover-image img {
@@ -140,22 +137,17 @@ h3 { font-size: 1.5rem; }
 
 @media (min-width: 769px) and (max-width: 1200px) {
   .profile-image {
-    width: 65px !important;
-    height: 65px !important;
-    max-width: 65px !important;
-    max-height: 65px !important;
+    width: 110px;
+    height: 110px;
   }
 }
 
 @media (min-width: 1201px) {
   .profile-image {
-    width: 75px !important;
-    height: 75px !important;
-    max-width: 75px !important;
-    max-height: 75px !important;
+    width: 130px;
+    height: 130px;
   }
 }
-
 
 // ========================================
 // LAYOUT COMPONENTS
@@ -193,31 +185,6 @@ h3 { font-size: 1.5rem; }
 // ========================================
 // HOME PAGE COMPONENTS
 // ========================================
-
-// Professional Intro Box
-.intro-box {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  color: white;
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  margin-bottom: 2rem;
-  box-shadow: var(--shadow-md);
-  
-  h1 {
-    color: white;
-    margin-bottom: 0.5rem;
-    font-size: 2.5rem;
-  }
-  
-  p {
-    margin-bottom: 0.5rem;
-    opacity: 0.95;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
 
 // Section Links
 .section-link {
@@ -449,10 +416,6 @@ hr {
 // RESPONSIVE DESIGN
 // ========================================
 @media (max-width: 768px) {
-  .intro-box h1 {
-    font-size: 2rem;
-  }
-  
   .item-date {
     float: none;
     display: block;
