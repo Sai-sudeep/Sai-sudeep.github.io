@@ -39,7 +39,7 @@ minima:
     twitter: sai_sudeep
     github: sai-sudeep
     linkedin: "sai-sudeep-das-1946ab130"  # Add your LinkedIn
-    youtube: "saisudeepdas"  # Add your YouTube
+    youtube: "@saisudeepdas"  # Add your YouTube
   date_format: "%B %Y"
   show_excerpts: true
 
@@ -133,7 +133,7 @@ social_links:
   - { platform: facebook, user: saisudeep.das }
   - { platform: instagram, user: i_am_so_deep_ }
   - { platform: instagram, user: the_quintessential_inker }
-  - { platform: youtube, user: saisudeepdas }
+  - { platform: youtube, user: @saisudeepdas }
 
 # Build Performance
 lsi: false
