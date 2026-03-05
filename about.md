@@ -180,123 +180,135 @@ permalink: /about/
 document.addEventListener('DOMContentLoaded', function() {
     const navButtons = document.querySelectorAll('.nav-btn');
     const contentSections = document.querySelectorAll('.content-section');
-    
+    let slideshowInitialized = false;
+
     // Hide all sections initially except the first one
     contentSections.forEach((section, index) => {
         if (index !== 0) {
             section.style.display = 'none';
         }
     });
-    
+
     // Add click event listeners to navigation buttons
     navButtons.forEach((button, index) => {
         button.addEventListener('click', function() {
             // Remove active class from all buttons
             navButtons.forEach(btn => btn.classList.remove('active'));
-            
+
             // Add active class to clicked button
             this.classList.add('active');
-            
+
             // Hide all content sections
             contentSections.forEach(section => {
                 section.style.display = 'none';
             });
-            
+
             // Show the corresponding content section
             if (contentSections[index]) {
                 contentSections[index].style.display = 'block';
-                contentSections[index].scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'nearest' 
+                contentSections[index].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
                 });
+            }
+
+            // Index 2 = Artistic Dimension — initialize slideshow only once,
+            // and only AFTER the section is visible (so wrapper has real pixel width)
+            if (index === 2 && !slideshowInitialized) {
+                slideshowInitialized = true;
+                setTimeout(initializeSlideshow, 50);
             }
         });
     });
-    
+
     // Set the first button as active by default
     if (navButtons.length > 0) {
         navButtons[0].classList.add('active');
     }
 
-    // Initialize slideshow
-    initializeSlideshow();
+    // NOTE: initializeSlideshow() is NOT called on page load.
+    // It runs the first time the user clicks "Artistic Dimension".
 });
 
 // Image Slideshow Configuration
 const SLIDESHOW_CONFIG = {
-  // 🎯 Auto-generates array from 1.jpg to 29.jpg
   images: Array.from({length: 29}, (_, i) => `${i + 1}.jpg`),
-  
-  autoSlideInterval: 5000, // 5 seconds
-  imagePath: '/images/' // Your folder path
+  autoSlideInterval: 5000,
+  imagePath: '/images/'
 };
 
 // Slideshow Implementation
 function initializeSlideshow() {
   const container = document.querySelector('.slideshow-wrapper');
   const dotsContainer = document.querySelector('.slideshow-dots');
-  
+
   if (!container || !dotsContainer || SLIDESHOW_CONFIG.images.length === 0) return;
-  
+
   let currentSlide = 0;
   let slideInterval;
-  
-  // Load images dynamically
+
+  // Set up flex layout now that the section is visible and has real width
+  container.style.display = 'flex';
+  container.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+  // Load images and dots
   function loadImages() {
     container.innerHTML = '';
     dotsContainer.innerHTML = '';
-    
+
     SLIDESHOW_CONFIG.images.forEach((imageName, index) => {
-      // Create image element
       const img = document.createElement('img');
       img.src = `${SLIDESHOW_CONFIG.imagePath}${imageName}`;
       img.alt = `Musical performance ${index + 1}`;
-      img.loading = 'lazy';
+      img.loading = index === 0 ? 'eager' : 'lazy';
+      img.style.flexShrink = '0';
+      img.style.width = '100%';
+      img.style.objectFit = 'cover';
       container.appendChild(img);
-      
-      // Create navigation dot
+
       const dot = document.createElement('span');
       dot.className = index === 0 ? 'dot active' : 'dot';
-      dot.addEventListener('click', () => goToSlide(index));
+      dot.addEventListener('click', () => {
+        goToSlide(index);
+        pauseSlideshow();
+      });
       dotsContainer.appendChild(dot);
     });
   }
-  
+
   // Navigate to specific slide
   function goToSlide(slideIndex) {
     currentSlide = slideIndex;
-    const translateX = -slideIndex * 100;
-    container.style.transform = `translateX(${translateX}%)`;
-    
-    // Update active dot
+    container.style.transform = `translateX(${-slideIndex * 100}%)`;
     document.querySelectorAll('.dot').forEach((dot, index) => {
       dot.classList.toggle('active', index === slideIndex);
     });
   }
-  
-  // Auto advance slides
+
   function nextSlide() {
     currentSlide = (currentSlide + 1) % SLIDESHOW_CONFIG.images.length;
     goToSlide(currentSlide);
   }
-  
-  // Start auto slideshow
+
   function startSlideshow() {
     slideInterval = setInterval(nextSlide, SLIDESHOW_CONFIG.autoSlideInterval);
   }
-  
-  // Stop slideshow on user interaction
+
   function pauseSlideshow() {
     clearInterval(slideInterval);
-    setTimeout(startSlideshow, 8000); // Restart after 8 seconds
+    setTimeout(startSlideshow, 8000);
   }
-  
-  // Initialize
+
+  // Load images then start after a brief delay so flex layout is painted
   loadImages();
-  startSlideshow();
-  
-  // Pause on hover
-  container.addEventListener('mouseenter', pauseSlideshow);
+  setTimeout(() => {
+    goToSlide(0);
+    startSlideshow();
+  }, 50);
+
+  // Pause on hover, resume on leave
+  container.addEventListener('mouseenter', () => clearInterval(slideInterval));
+  container.addEventListener('mouseleave', () => startSlideshow());
   dotsContainer.addEventListener('click', pauseSlideshow);
 }
 </script>
