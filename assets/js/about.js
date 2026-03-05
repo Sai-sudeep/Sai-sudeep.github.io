@@ -2,6 +2,35 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // ========================================
+    // DYNAMIC IMAGE GENERATION
+    // ========================================
+    function generateSlideshowImages() {
+        const containers = document.querySelectorAll('.slideshow-wrapper');
+        
+        containers.forEach(wrapper => {
+            // Only generate if container is empty or has placeholder comment
+            if (wrapper.children.length === 0 || 
+                wrapper.innerHTML.trim().includes('<!-- Images will be dynamically loaded here -->') ||
+                wrapper.innerHTML.trim() === '') {
+                
+                wrapper.innerHTML = '';
+                
+                // Generate 29 images
+                for (let i = 1; i <= 29; i++) {
+                    const img = document.createElement('img');
+                    img.src = `/images/${i}.jpg`;
+                    img.alt = `Musical performance and artistic expression ${i}`;
+                    img.loading = i === 1 ? 'eager' : 'lazy';
+                    wrapper.appendChild(img);
+                }
+            }
+        });
+    }
+    
+    // Generate images first
+    generateSlideshowImages();
+    
+    // ========================================
     // NAVIGATION SYSTEM
     // ========================================
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -120,8 +149,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Auto-play functionality
         function startSlideshow() {
             if (images.length > 1) {
-                slideInterval = setInterval(nextSlide, 4000); // 4 seconds
+                slideInterval = setInterval(nextSlide, 5000); // 5 seconds (matching original)
                 isPlaying = true;
+                slideshow.classList.add('playing');
             }
         }
         
@@ -130,12 +160,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearInterval(slideInterval);
                 slideInterval = null;
                 isPlaying = false;
+                slideshow.classList.remove('playing');
             }
         }
         
         function resetInterval() {
             stopSlideshow();
-            startSlideshow();
+            setTimeout(() => {
+                startSlideshow();
+            }, 8000); // 8 second pause after user interaction (matching original)
         }
         
         // Screen reader announcement
@@ -150,6 +183,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     liveRegion.className = 'slideshow-live-region sr-only';
                     liveRegion.setAttribute('aria-live', 'polite');
                     liveRegion.setAttribute('aria-atomic', 'true');
+                    liveRegion.style.position = 'absolute';
+                    liveRegion.style.width = '1px';
+                    liveRegion.style.height = '1px';
+                    liveRegion.style.padding = '0';
+                    liveRegion.style.margin = '-1px';
+                    liveRegion.style.overflow = 'hidden';
+                    liveRegion.style.clip = 'rect(0, 0, 0, 0)';
+                    liveRegion.style.whiteSpace = 'nowrap';
+                    liveRegion.style.border = '0';
                     slideshow.appendChild(liveRegion);
                 }
                 liveRegion.textContent = `${altText}. Slide ${currentSlide + 1} of ${images.length}`;
@@ -244,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Handle image error events
                 img.addEventListener('error', function() {
-                    this.alt = 'Image failed to load';
+                    this.alt = `Musical performance image ${index + 1} - Image failed to load`;
                     console.warn('Slideshow image failed to load:', this.src);
                 });
             });
@@ -281,9 +323,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Set up image grid for smooth transitions
             wrapper.style.display = 'flex';
+            wrapper.style.transition = 'transform 0.5s ease-in-out';
             images.forEach(img => {
                 img.style.flexShrink = '0';
                 img.style.width = '100%';
+                img.style.objectFit = 'cover';
             });
             
             // Create dots and set up functionality
@@ -311,7 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add ARIA attributes for accessibility
             slideshow.setAttribute('role', 'region');
-            slideshow.setAttribute('aria-label', 'Image slideshow');
+            slideshow.setAttribute('aria-label', 'Musical performance image slideshow');
+            slideshow.setAttribute('tabindex', '0');
             wrapper.setAttribute('aria-live', 'polite');
         }
         
@@ -330,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ========================================
-    // GLOBAL SLIDESHOW CONTROLS (Optional)
+    // GLOBAL SLIDESHOW CONTROLS
     // ========================================
     
     // Pause all slideshows when user prefers reduced motion
@@ -392,3 +437,19 @@ window.getSlideshowStatus = function(slideshowId) {
         isPlaying: slideshow.classList.contains('playing')
     };
 };
+
+// Function to configure slideshow settings
+window.configureSlideshowSettings = function(settings = {}) {
+    const defaults = {
+        autoSlideInterval: 5000,
+        pauseAfterInteraction: 8000,
+        transitionDuration: 500,
+        swipeThreshold: 50
+    };
+    
+    window.SLIDESHOW_SETTINGS = { ...defaults, ...settings };
+    console.log('Slideshow settings updated:', window.SLIDESHOW_SETTINGS);
+};
+
+// Initialize default settings
+window.configureSlideshowSettings();
