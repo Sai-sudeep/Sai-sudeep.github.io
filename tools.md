@@ -15,13 +15,16 @@ permalink: /tools/
     <div class="tools-grid">
 
       <!-- Palta Maker Card -->
-      <div class="tool-card" onclick="openTool('palta-maker')">
+      <div class="tool-card">
         <div class="tool-icon">🎵</div>
         <div class="tool-info">
           <h3>Alankar / Palta Maker</h3>
           <p>Generate classical Hindustani music practice patterns (alankars and paltas) across swaras, speeds, and laya. Useful for vocalists and instrumentalists at all levels.</p>
         </div>
-        <div class="tool-launch">Open Tool →</div>
+        <div class="tool-actions">
+          <button class="tool-btn tool-btn-preview" onclick="openTool('palta-maker')">👁️ Preview Here</button>
+          <a class="tool-btn tool-btn-newpage" href="/assets/tools/palta-maker.html" target="_blank">↗ Open in New Page</a>
+        </div>
       </div>
 
       <!-- Add more tool cards here in future -->
@@ -54,7 +57,6 @@ permalink: /tools/
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
@@ -72,6 +74,7 @@ permalink: /tools/
   line-height: 1;
 }
 
+/* FIX 2: white title on the blue card header area */
 .tool-info h3 {
   color: #082567 !important;
   margin: 0 0 0.5rem 0;
@@ -86,11 +89,53 @@ permalink: /tools/
   text-align: left !important;
 }
 
-.tool-launch {
+/* FIX 3: Two action buttons */
+.tool-actions {
+  display: flex;
+  gap: 0.75rem;
   margin-top: auto;
-  color: #082567 !important;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: var(--font-body);
+}
+
+.tool-btn-preview {
+  background: #082567 !important;
+  color: #ffffff !important;
+}
+
+.tool-btn-preview:hover {
+  background: #061a4d !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.tool-btn-newpage {
+  background: #ffffff !important;
+  color: #082567 !important;
+  border: 2px solid #082567 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-btn-newpage:hover {
+  background: #f5f5f5 !important;
+  color: #082567 !important;
+  transform: translateY(-1px);
+  text-decoration: none !important;
 }
 
 .tool-embed {
@@ -103,7 +148,7 @@ permalink: /tools/
 
 .tool-embed-header {
   background: #082567;
-  color: #ffffff;
+  color: #ffffff !important;
   padding: 0.75rem 1.25rem;
   display: flex;
   justify-content: space-between;
@@ -113,10 +158,15 @@ permalink: /tools/
   font-size: 1rem;
 }
 
+/* FIX 2: title in embed header is white */
+#tool-embed-title {
+  color: #ffffff !important;
+}
+
 .tool-close-btn {
   background: rgba(255,255,255,0.15);
   border: 1px solid rgba(255,255,255,0.3);
-  color: #ffffff;
+  color: #ffffff !important;
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
   cursor: pointer;
@@ -138,6 +188,10 @@ permalink: /tools/
 @media (max-width: 768px) {
   #tool-iframe {
     height: 500px;
+  }
+
+  .tool-actions {
+    flex-direction: column;
   }
 }
 </style>
