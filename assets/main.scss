@@ -1442,7 +1442,8 @@ ul li, ol li {
 .slideshow-wrapper {
   position: relative;
   width: 100%;
-  height: 400px;
+  aspect-ratio: 1 / 1;
+  height: auto;
   overflow: hidden;
   display: flex;
   transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1502,13 +1503,15 @@ ul li, ol li {
 /* Responsive Design */
 @media (max-width: 1024px) {
   .slideshow-wrapper {
-    height: 350px;
+    aspect-ratio: 1 / 1;
+    height: auto;
   }
 }
 
 @media (max-width: 768px) {
   .slideshow-wrapper {
-    height: 280px;
+    aspect-ratio: 1 / 1;
+    height: auto;
   }
   
   .slideshow-dots {
@@ -1524,7 +1527,8 @@ ul li, ol li {
 
 @media (max-width: 480px) {
   .slideshow-wrapper {
-    height: 220px;
+    aspect-ratio: 1 / 1;
+    height: auto;
   }
   
   .slideshow-container {
