@@ -20,7 +20,13 @@ permalink: /about/
     <!-- Summary Section -->
     <div class="about-summary">
       <p class="summary-text">
-        I am a doctoral researcher at IIT Delhi specializing in computational linguistics and NLP for low-resource languages, particularly Odia. With dual Gold Medal master's degrees from University of Hyderabad in Applied Linguistics and Hindustani Classical Music, I bring unique interdisciplinary perspectives to language technology. My professional experience includes leading language teams at AI4Bharat and developing conversational AI systems. As a trained classical vocalist with performances across India, I explore connections between music and language processing. My research focuses on morpho-syntactic analysis, dependency parsing, and cultural preservation through technology. I am passionate about multilingual AI, vocal acoustics, and interdisciplinary collaboration.
+        I am a doctoral researcher at IIT Delhi working in Indic natural language processing and computational linguistics, with a particular interest in low-resource languages, including Odia. My academic background includes master’s degrees in Applied Linguistics and Hindustani Classical Music from the University of Hyderabad, where I was fortunate to receive gold medals in both programs.
+
+Before beginning my doctoral research, I worked with language technology teams at AI4Bharat, contributing to projects on conversational AI and language resources for Indian languages. These experiences strengthened my interest in developing technologies that better support multilingual communities.
+
+My current research focuses on corpus development and data quality estimation for low-resource languages, with the goal of generating insights that can improve the reliability and usefulness of language technologies. I am also interested in morpho-syntactic analysis, dependency parsing, and other linguistic approaches that help better model the structure of under-resourced languages.
+
+Alongside my research, I am a trained Hindustani classical vocalist and have had the opportunity to perform across India. I am particularly interested in the connections between music, vocal acoustics, and language processing, and I enjoy exploring interdisciplinary collaborations at the intersection of language, technology, and the arts.
       </p>
     </div>
 
