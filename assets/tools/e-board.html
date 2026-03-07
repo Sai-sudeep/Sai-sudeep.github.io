@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-board | Pro Console V3.7</title>
+    <title>Virtual E-Board Studio</title>
     <style>
         :root {
             --bg: #e0e5ec;
@@ -11,431 +11,565 @@
             --shadow-light: #ffffff;
             --accent: #082567;
             --pointer: #3498db;
+            --highlight: #f59e0b;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background-color: var(--bg);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-            color: #333;
-        }
-        
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { font-size: 2.8rem; color: var(--accent); font-weight: 800; letter-spacing: -1px; }
-        .subtitle { font-size: 0.7rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+        body { background-color: var(--bg); font-family: 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; color: #333; }
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { font-size: 2.8rem; color: #2c3e50; font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
 
-        .main-box {
-            background-color: var(--bg);
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
-            max-width: 1200px;
-            width: 100%;
-        }
+        .main-box { background-color: var(--bg); padding: 30px; border-radius: 20px; box-shadow: 15px 15px 30px rgba(163,177,198,0.5), -15px -15px 30px rgba(255,255,255,0.8); max-width: 1000px; width: 100%; }
 
-        /* --- ENHANCED 3D TOGGLE --- */
-        .ui-toggle-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .toggle-label { font-size: 0.75rem; font-weight: 700; color: #777; text-transform: uppercase; }
-        
-        .switch { 
-            position: relative; 
-            display: inline-block; 
-            width: 70px; 
-            height: 36px; 
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        
-        /* The molded track */
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--bg); transition: .4s; border-radius: 34px;
-            box-shadow: 
-                inset 6px 6px 10px var(--shadow-dark), 
-                inset -6px -6px 10px var(--shadow-light);
-        }
-        
-        /* The 3D Raised Slider Button */
-        .slider:before {
-            position: absolute; content: ""; height: 26px; width: 26px; left: 5px; bottom: 5px;
-            background: linear-gradient(145deg, #f0f0f0, #cacaca);
-            transition: .4s; border-radius: 50%;
-            box-shadow: 
-                3px 3px 6px var(--shadow-dark), 
-                -1px -1px 2px var(--shadow-light);
-        }
-        
-        input:checked + .slider:before { 
-            transform: translateX(34px); 
-            background: var(--accent);
-            box-shadow: 
-                0 0 10px rgba(8, 37, 103, 0.4),
-                inset 1px 1px 2px rgba(255,255,255,0.3);
-        }
+        button { background-color: var(--bg); border: none; border-radius: 10px; box-shadow: 6px 6px 12px rgba(163,177,198,0.6), -6px -6px 12px var(--shadow-light); font-weight: bold; color: #2c3e50; transition: all 0.2s ease; cursor: pointer; outline: none; }
+        button:active { box-shadow: inset 4px 4px 8px rgba(163,177,198,0.7), inset -4px -4px 8px var(--shadow-light); }
 
-        /* --- KEYBOARD UI --- */
-        .keyboard-wrapper {
-            background: #080808;
-            padding: 20px 10px 10px 10px;
-            border-radius: 12px;
-            box-shadow: inset 0 10px 25px #000, 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 35px;
-            overflow-x: auto;
-        }
-        .keyboard { position: relative; height: 240px; display: inline-flex; white-space: nowrap; padding-top: 5px; }
+        .console-divider { width: 90%; height: 1px; background: linear-gradient(to right, transparent, var(--shadow-dark), transparent); opacity: 0.5; margin: 10px 0; }
+        
+        .segmented-control { position: relative; display: inline-flex; width: 220px; height: 40px; background: #d1d9e6; border-radius: 20px; box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); margin: 0; }
+        .segmented-control input { display: none; }
+        .seg-slider { position: absolute; top: 4px; left: 4px; width: 104px; height: 32px; background: var(--bg); border-radius: 16px; box-shadow: 2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light); transition: transform 0.3s cubic-bezier(0.25,0.8,0.25,1); z-index: 1; }
+        .segmented-control input:checked ~ .seg-slider { transform: translateX(108px); }
+        .seg-label { flex: 1; text-align: center; line-height: 40px; font-size: 12px; font-weight: 800; color: #7f8c8d; z-index: 2; cursor: pointer; transition: color 0.3s; letter-spacing: 1px; }
+        .segmented-control input:not(:checked) ~ .seg-label.left { color: var(--accent); }
+        .segmented-control input:checked ~ .seg-label.right { color: var(--accent); }
+        
+        .ui-panel { display: none; justify-content: center; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 16px; }
+        .ui-panel.active { display: flex; }
+        .ctrl-group { display: flex; flex-direction: column; align-items: center; min-width: 75px; }
+        .label { margin-bottom: 4px; font-weight: 700; font-size: 0.68rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+        .v-tag { font-family: monospace; font-size: 0.78rem; color: #888; margin-bottom: 8px; font-weight: bold; }
+        
+        .knob-o { width: 68px; height: 68px; border-radius: 50%; background: var(--bg); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); display: flex; justify-content: center; align-items: center; cursor: ns-resize; touch-action: none; }
+        .knob-i { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(145deg, #f8f9fb, #d1d9e6); box-shadow: 2px 2px 5px var(--shadow-dark); position: relative; }
+        .knob-d { width: 4px; height: 14px; background: var(--pointer); border-radius: 2px; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); transform-origin: 50% 19px; }
+        
+        .f-track { width: 14px; height: 150px; background: var(--bg); border-radius: 10px; box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); position: relative; cursor: ns-resize; touch-action: none; }
+        .f-cap { width: 36px; height: 48px; background: linear-gradient(to bottom, #f0f0f0, #bcc6d5); border-radius: 5px; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-top: 1px solid #fff; }
+        .f-cap::after { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--pointer); }
+
+        .eboard-console { background: var(--bg); border-radius: 16px; box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light); padding: 16px 20px 20px; margin: 0 0 16px 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .eboard-console-title { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; }
+
+        .btn-eq { padding: 7px 22px; font-size: 12px; font-weight: 800; letter-spacing: 1px; border-radius: 20px; color: var(--accent); }
+        .btn-eq.eq-open { box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light); }
+        .eq-panel { overflow: hidden; max-height: 0; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .eq-panel.open { max-height: 340px; }
+        .eq-inner { padding: 18px 10px 10px 10px; }
+        .eq-seg { position: relative; display: inline-flex; width: 160px; height: 32px; background: #d1d9e6; border-radius: 16px; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); margin-bottom: 18px; }
+        .eq-seg input { display: none; }
+        .eq-seg-slider { position: absolute; top: 3px; left: 3px; width: 76px; height: 26px; background: var(--bg); border-radius: 13px; box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light); transition: transform 0.3s cubic-bezier(0.25,0.8,0.25,1); z-index: 1; }
+        .eq-seg input:checked ~ .eq-seg-slider { transform: translateX(78px); }
+        .eq-seg-label { flex: 1; text-align: center; line-height: 32px; font-size: 11px; font-weight: 800; color: #7f8c8d; z-index: 2; cursor: pointer; letter-spacing: 1px; }
+        .eq-seg input:not(:checked) ~ .eq-seg-label.left  { color: var(--accent); }
+        .eq-seg input:checked       ~ .eq-seg-label.right { color: var(--accent); }
+        
+        .eq-ui { display: none; justify-content: space-around; align-items: flex-end; width: 100%; padding: 4px 0; flex-wrap: wrap; gap: 6px; }
+        .eq-ui.active { display: flex; }
+        .eq-ctrl { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
+        .eq-lbl { font-size: 9px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; text-align: center; line-height: 1.2; }
+        .eq-val { font-family: monospace; font-size: 9px; color: #888; font-weight: bold; margin-bottom: 6px; }
+        .eq-knob-o { width: 44px; height: 44px; border-radius: 50%; background: var(--bg); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); display: flex; justify-content: center; align-items: center; cursor: ns-resize; touch-action: none; }
+        .eq-knob-i { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(145deg,#f8f9fb,#d1d9e6); box-shadow: 2px 2px 4px var(--shadow-dark); position: relative; }
+        .eq-knob-d { width: 3px; height: 10px; background: var(--pointer); border-radius: 2px; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); transform-origin: 50% 12px; }
+        .eq-f-track { width: 10px; height: 100px; background: var(--bg); border-radius: 8px; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); position: relative; cursor: ns-resize; touch-action: none; }
+        .eq-f-cap { width: 24px; height: 32px; background: linear-gradient(to bottom,#f0f0f0,#bcc6d5); border-radius: 4px; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 3px 6px rgba(0,0,0,0.25); border-top: 1px solid #fff; }
+        .eq-f-cap::after { content:''; position:absolute; top:50%; left:15%; right:15%; height:2px; background:var(--pointer); }
+
+        .keyboard-wrapper { background: #0a0a0a; padding: 25px 15px 15px 15px; border-radius: 12px; box-shadow: inset 0 10px 30px #000; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 20px; }
+        .keyboard-main { position: relative; height: 240px; display: inline-flex; white-space: nowrap; padding-top: 5px; }
         .key { position: relative; user-select: none; transition: all 0.08s ease; cursor: pointer; }
-        
-        .white-key {
-            width: 50px; height: 100%;
-            background: linear-gradient(to bottom, #eee 0%, #fff 8%, #fff 92%, #e0e0e0 100%);
-            border: 1px solid #d1d1d1; border-radius: 0 0 5px 5px; z-index: 1;
-            display: flex; justify-content: center; align-items: flex-end;
-            padding-bottom: 10px; font-size: 10px; color: #ccc; font-weight: bold;
-            box-shadow: -1px 0 0 rgba(255,255,255,0.8) inset, 0 4px 6px rgba(0,0,0,0.15);
-        }
+        .white-key { width: 50px; height: 100%; background: linear-gradient(to bottom, #eee 0%, #fff 8%, #fff 92%, #e0e0e0 100%); border: 1px solid #d1d1d1; border-radius: 0 0 5px 5px; z-index: 1; box-shadow: -1px 0 0 rgba(255,255,255,0.8) inset, 0 4px 6px rgba(0,0,0,0.2); }
         .white-key.active { height: 98%; transform: translateY(3px); background: #f0f0f0; box-shadow: inset 0 10px 20px rgba(0,0,0,0.1); }
-        
-        .black-key {
-            width: 30px; height: 60%;
-            background: linear-gradient(135deg, #444 0%, #222 10%, #000 30%, #000 100%);
-            border-radius: 0 0 4px 4px; z-index: 2; margin: 0 -15px;
-            box-shadow: -2px 2px 0 #1a1a1a, -4px 4px 10px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.15);
-        }
+        .black-key { width: 30px; height: 60%; background: linear-gradient(135deg, #444 0%, #222 10%, #000 30%, #000 100%); border-radius: 0 0 4px 4px; z-index: 2; margin: 0 -15px; box-shadow: -2px 2px 0 #1a1a1a, -4px 4px 10px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.15); }
         .black-key.active { height: 59%; transform: translateY(2px); background: #000; }
 
-        .interface-container { min-height: 200px; position: relative; }
-        .ui-panel { display: none; justify-content: space-around; align-items: flex-end; width: 100%; }
-        .ui-panel.active { display: flex; }
+        .copyright { text-align: center; font-size: 12px; color: #7f8c8d; margin-top: 40px; }
 
-        .knob-group, .fader-group { display: flex; flex-direction: column; align-items: center; width: 140px; position: relative; }
-        .label { margin-bottom: 5px; font-weight: 700; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; }
-        .value-display { font-family: monospace; font-size: 0.75rem; color: #888; margin-bottom: 10px; font-weight: bold; }
-        
-        .knob-outer {
-            width: 70px; height: 70px; border-radius: 50%; background: var(--bg);
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-            display: flex; justify-content: center; align-items: center; cursor: ns-resize;
-        }
-        .knob-inner {
-            width: 48px; height: 48px; border-radius: 50%;
-            background: linear-gradient(145deg, #f8f9fb, #d1d9e6);
-            box-shadow: 2px 2px 5px var(--shadow-dark), -1px -1px 2px var(--shadow-light);
-            position: relative;
-        }
-        .knob-dot {
-            width: 4px; height: 14px; background: var(--pointer); border-radius: 2px;
-            position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
-            transform-origin: 50% 20px;
+        @media (max-width: 580px) {
+            h1 { font-size: 1.9rem; }
+            .main-box { padding: 16px 11px; }
+            .ui-panel { flex-wrap: wrap; gap: 14px; }
+            .ctrl-group { min-width: 70px; }
         }
 
-        .fader-track {
-            width: 12px; height: 140px; background: var(--bg); border-radius: 10px;
-            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-            position: relative; cursor: ns-resize;
-        }
-        .fader-cap {
-            width: 34px; height: 45px; background: linear-gradient(to bottom, #f0f0f0, #bcc6d5);
-            border-radius: 4px; position: absolute; left: 50%; transform: translateX(-50%);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-top: 1px solid #fff;
-        }
-        .fader-cap::after {
-            content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--pointer);
-        }
-
-        .copyright { text-align: center; font-size: 12px; color: #7f8c8d; margin-top: 30px; }
+        .hfader-wrap{width:100%;max-width:420px;margin:6px auto 2px auto;display:flex;flex-direction:column;align-items:center}
+        .hfader-label{font-size:10px;font-weight:800;color:var(--accent);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+        .hfader-track{position:relative;width:100%;height:14px;border-radius:10px;background:var(--bg); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);cursor:ew-resize;touch-action:none}
+        .hfader-cap{position:absolute;top:50%;transform:translate(-50%,-50%);width:42px;height:22px;border-radius:6px; background:linear-gradient(145deg,#f0f0f0,#bcc6d5);box-shadow:0 4px 8px rgba(0,0,0,0.3); transition: left 0.1s ease-out;} /* Added smooth snapping transition */
+        .hfader-cap:after{content:'';position:absolute;left:10%;right:10%;top:50%;height:2px;background:var(--pointer)}
+        .hfader-val{font-family:monospace;font-size:11px;margin-top:4px;color:#777;font-weight:bold}
     </style>
 </head>
 <body>
-
-<header>
-    <h1>E-board</h1>
-    <p class="subtitle">(Virtual Electronic Keyboard)</p>
-</header>
+<header><h1>Virtual E-Board</h1></header>
 
 <div class="main-box">
-    <div class="ui-toggle-wrapper">
-        <span class="toggle-label">Knobs</span>
-        <label class="switch">
-            <input type="checkbox" id="ui-mode-toggle" onchange="switchUI()">
-            <span class="slider"></span>
-        </label>
-        <span class="toggle-label">Faders</span>
-    </div>
+    <div id="panel-keyboard">
+        <div class="keyboard-wrapper"><div class="keyboard-main" id="kbd-main"></div></div>
+        <p style="text-align:center;font-size:12px;color:#888;margin-bottom:14px;">(Scroll to explore full A0–A7 range)</p>
 
-    <div class="keyboard-wrapper">
-        <div class="keyboard" id="keyboard"></div>
-    </div>
-    
-    <div class="interface-container">
-        <div id="panel-knobs" class="ui-panel active">
-            <div class="knob-group">
-                <span class="label">Volume</span><span class="value-display" id="val-k-volume">0%</span>
-                <div class="knob-outer" id="k-volume"><div class="knob-inner"><div class="knob-dot" id="dot-volume"></div></div></div>
+        <div class="eboard-console">
+            <span class="eboard-console-title">Sound Controls</span>
+
+            <div class="hfader-wrap">
+                <span class="hfader-label">Note Transpose</span>
+                <div class="hfader-track" id="hf-note"><div class="hfader-cap" id="hf-note-cap"></div></div>
+                <span class="hfader-val" id="hf-note-val">0 st</span>
             </div>
-            <div class="knob-group">
-                <span class="label">Tone</span><span class="value-display" id="val-k-tone">0%</span>
-                <div class="knob-outer" id="k-tone"><div class="knob-inner"><div class="knob-dot" id="dot-tone"></div></div></div>
+
+            <div class="hfader-wrap">
+                <span class="hfader-label">Octave Transpose</span>
+                <div class="hfader-track" id="hf-oct"><div class="hfader-cap" id="hf-oct-cap"></div></div>
+                <span class="hfader-val" id="hf-oct-val">0 oct</span>
             </div>
-            <div class="knob-group">
-                <span class="label">Sustain</span><span class="value-display" id="val-k-sustain">0%</span>
-                <div class="knob-outer" id="k-sustain"><div class="knob-inner"><div class="knob-dot" id="dot-sustain"></div></div></div>
+
+            <div class="segmented-control" style="margin-top: 15px;">
+                <input type="checkbox" id="ui-tog-kb" onchange="switchControlUIKb()">
+                <div class="seg-slider"></div>
+                <label for="ui-tog-kb" class="seg-label left">KNOBS</label>
+                <label for="ui-tog-kb" class="seg-label right">FADERS</label>
             </div>
-            <div class="knob-group">
-                <span class="label">Reverb</span><span class="value-display" id="val-k-reverb">0%</span>
-                <div class="knob-outer" id="k-reverb"><div class="knob-inner"><div class="knob-dot" id="dot-reverb"></div></div></div>
+            
+            <div id="panel-knobs-kb" class="ui-panel active">
+                <div class="ctrl-group"><span class="label">Volume</span><span class="v-tag" id="vk2-volume">85%</span><div class="knob-o" id="k2-volume"><div class="knob-i"><div class="knob-d" id="dk2-volume"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Tone</span><span class="v-tag" id="vk2-tone">50%</span><div class="knob-o" id="k2-tone"><div class="knob-i"><div class="knob-d" id="dk2-tone"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Sustain</span><span class="v-tag" id="vk2-sustain">1.2s</span><div class="knob-o" id="k2-sustain"><div class="knob-i"><div class="knob-d" id="dk2-sustain"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Reverb</span><span class="v-tag" id="vk2-reverb">25%</span><div class="knob-o" id="k2-reverb"><div class="knob-i"><div class="knob-d" id="dk2-reverb"></div></div></div></div>
+            </div>
+            
+            <div id="panel-faders-kb" class="ui-panel">
+                <div class="ctrl-group"><span class="label">Volume</span><span class="v-tag" id="vf2-volume">85%</span><div class="f-track" id="f2-volume"><div class="f-cap" id="cf2-volume"></div></div></div>
+                <div class="ctrl-group"><span class="label">Tone</span><span class="v-tag" id="vf2-tone">50%</span><div class="f-track" id="f2-tone"><div class="f-cap" id="cf2-tone"></div></div></div>
+                <div class="ctrl-group"><span class="label">Sustain</span><span class="v-tag" id="vf2-sustain">1.2s</span><div class="f-track" id="f2-sustain"><div class="f-cap" id="cf2-sustain"></div></div></div>
+                <div class="ctrl-group"><span class="label">Reverb</span><span class="v-tag" id="vf2-reverb">25%</span><div class="f-track" id="f2-reverb"><div class="f-cap" id="cf2-reverb"></div></div></div>
+            </div>
+            
+            <div class="console-divider"></div>
+            
+            <div style="display: flex; justify-content: center; width: 100%;">
+                <button class="btn-eq" id="eqBtn2" onclick="toggleEQ2()">&#9195; EQ</button>
+            </div>
+            
+            <div class="eq-panel" id="eqPanel2" style="width:100%;">
+                <div class="eq-inner">
+                    <div style="text-align:center;margin-bottom:18px;">
+                        <div style="position:relative;display:inline-flex;width:160px;height:32px;background:#d1d9e6;border-radius:16px;box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);">
+                            <input type="checkbox" id="eq-tog2" onchange="switchEQUI2()" style="display:none;">
+                            <div class="eq-seg-slider"></div>
+                            <label for="eq-tog2" class="eq-seg-label left">KNOBS</label>
+                            <label for="eq-tog2" class="eq-seg-label right">FADERS</label>
+                        </div>
+                    </div>
+                    <div id="eq2-panel-knobs" class="eq-ui active">
+                        <div class="eq-ctrl"><span class="eq-lbl">Sub<br>Bass</span><span class="eq-val" id="evk2-0">0dB</span><div class="eq-knob-o" id="ek2-0"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-0"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Bass</span><span class="eq-val" id="evk2-1">0dB</span><div class="eq-knob-o" id="ek2-1"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-1"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Low<br>Mids</span><span class="eq-val" id="evk2-2">0dB</span><div class="eq-knob-o" id="ek2-2"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-2"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Mids</span><span class="eq-val" id="evk2-3">0dB</span><div class="eq-knob-o" id="ek2-3"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-3"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Pres&shy;ence</span><span class="eq-val" id="evk2-4">0dB</span><div class="eq-knob-o" id="ek2-4"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-4"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Upper<br>Mids</span><span class="eq-val" id="evk2-5">0dB</span><div class="eq-knob-o" id="ek2-5"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-5"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Highs</span><span class="eq-val" id="evk2-6">0dB</span><div class="eq-knob-o" id="ek2-6"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-6"></div></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Bril&shy;liance</span><span class="eq-val" id="evk2-7">0dB</span><div class="eq-knob-o" id="ek2-7"><div class="eq-knob-i"><div class="eq-knob-d" id="edk2-7"></div></div></div></div>
+                    </div>
+                    <div id="eq2-panel-faders" class="eq-ui">
+                        <div class="eq-ctrl"><span class="eq-lbl">Sub<br>Bass</span><span class="eq-val" id="evf2-0">0dB</span><div class="eq-f-track" id="ef2-0"><div class="eq-f-cap" id="ecf2-0"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Bass</span><span class="eq-val" id="evf2-1">0dB</span><div class="eq-f-track" id="ef2-1"><div class="eq-f-cap" id="ecf2-1"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Low<br>Mids</span><span class="eq-val" id="evf2-2">0dB</span><div class="eq-f-track" id="ef2-2"><div class="eq-f-cap" id="ecf2-2"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Mids</span><span class="eq-val" id="evf2-3">0dB</span><div class="eq-f-track" id="ef2-3"><div class="eq-f-cap" id="ecf2-3"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Pres&shy;ence</span><span class="eq-val" id="evf2-4">0dB</span><div class="eq-f-track" id="ef2-4"><div class="eq-f-cap" id="ecf2-4"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Upper<br>Mids</span><span class="eq-val" id="evf2-5">0dB</span><div class="eq-f-track" id="ef2-5"><div class="eq-f-cap" id="ecf2-5"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Highs</span><span class="eq-val" id="evf2-6">0dB</span><div class="eq-f-track" id="ef2-6"><div class="eq-f-cap" id="ecf2-6"></div></div></div>
+                        <div class="eq-ctrl"><span class="eq-lbl">Bril&shy;liance</span><span class="eq-val" id="evf2-7">0dB</span><div class="eq-f-track" id="ef2-7"><div class="eq-f-cap" id="ecf2-7"></div></div></div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div id="panel-faders" class="ui-panel">
-            <div class="fader-group">
-                <span class="label">Volume</span><span class="value-display" id="val-f-volume">0%</span>
-                <div class="fader-track" id="f-volume"><div class="fader-cap" id="cap-volume"></div></div>
-            </div>
-            <div class="fader-group">
-                <span class="label">Tone</span><span class="value-display" id="val-f-tone">0%</span>
-                <div class="fader-track" id="f-tone"><div class="fader-cap" id="cap-tone"></div></div>
-            </div>
-            <div class="fader-group">
-                <span class="label">Sustain</span><span class="value-display" id="val-f-sustain">0%</span>
-                <div class="fader-track" id="f-sustain"><div class="fader-cap" id="cap-sustain"></div></div>
-            </div>
-            <div class="fader-group">
-                <span class="label">Reverb</span><span class="value-display" id="val-f-reverb">0%</span>
-                <div class="fader-track" id="f-reverb"><div class="fader-cap" id="cap-reverb"></div></div>
-            </div>
-        </div>
     </div>
+</div>
 
+<div class="global-console">
     <div class="copyright">&copy; Sai Sudeep Das (2026)</div>
 </div>
 
 <script>
-    const NOTES_DATA = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-    const FREQS = {};
-    for (let oct = 0; oct <= 7; oct++) {
-        NOTES_DATA.forEach((n, i) => {
-            if (oct === 0 && i < 9) return;
-            if (oct === 7 && i > 9) return;
-            const name = n + oct;
-            const semi = (oct - 4) * 12 + (i - 9);
-            FREQS[name] = 440 * Math.pow(2, semi / 12);
-        });
-    }
+// ====================================================
+// AUDIO ENGINE & DSP
+// ====================================================
+const CHROMATIC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+let audioCtx, masterGain, reverbNode, convolver, dryGain;
+let activeVoices = new Map();
 
-    const KEY_MAP = { 'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4', 'f': 'F4', 't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4', 'u': 'A#4', 'j': 'B4', 'k': 'C5' };
+let settings = { volume:1.2, tone:0.5, sustain:1.2, reverb:0.25 };
+let eboardNoteOffset = 0;   
+let eboardOctaveOffset = 0; 
+let pianoBuffers={}, pianoReady=false, pianoLoading=false;
 
-    let audioCtx, masterGain, reverbNode, convolver;
-    let activeVoices = new Map();
-    let settings = { volume: 0.6, tone: 0.5, sustain: 1.2, reverb: 0.25 };
+const KEY_MAP={a:'C4',w:'C#4',s:'D4',e:'D#4',d:'E4',f:'F4',t:'F#4',g:'G4',y:'G#4',h:'A4',u:'A#4',j:'B4',k:'C5'};
+const FREQS={};
+for (let o=0;o<=7;o++) CHROMATIC.forEach((n,i)=>{
+    if(o===0&&i<9)return; if(o===7&&i>9)return;
+    FREQS[n+o]=440*Math.pow(2,((o-4)*12+(i-9))/12);
+});
+function freqToMidi(f){ return Math.round(12*Math.log2(f/440)+69); }
 
-    function initAudio() {
-        if (audioCtx) return;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
-        masterGain = audioCtx.createGain();
-        masterGain.gain.value = settings.volume;
-        masterGain.connect(audioCtx.destination);
-        reverbNode = audioCtx.createGain();
-        reverbNode.gain.value = settings.reverb;
-        convolver = audioCtx.createConvolver();
-        const len = audioCtx.sampleRate * 2.2;
-        const buffer = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
-        for (let c = 0; c < 2; c++) {
-            const data = buffer.getChannelData(c);
-            for (let i = 0; i < len; i++) {
-                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-            }
-        }
-        convolver.buffer = buffer;
-        reverbNode.connect(convolver);
-        convolver.connect(audioCtx.destination);
-    }
+const SAMPLE_NOTES=[
+    {m:21,n:'A0'},{m:24,n:'C1'},{m:27,n:'Eb1'},{m:30,n:'Gb1'},{m:33,n:'A1'},
+    {m:36,n:'C2'},{m:39,n:'Eb2'},{m:42,n:'Gb2'},{m:45,n:'A2'},
+    {m:48,n:'C3'},{m:51,n:'Eb3'},{m:54,n:'Gb3'},{m:57,n:'A3'},
+    {m:60,n:'C4'},{m:63,n:'Eb4'},{m:66,n:'Gb4'},{m:69,n:'A4'},
+    {m:72,n:'C5'},{m:75,n:'Eb5'},{m:78,n:'Gb5'},{m:81,n:'A5'},
+    {m:84,n:'C6'},{m:87,n:'Eb6'},{m:90,n:'Gb6'},{m:93,n:'A6'},
+    {m:96,n:'C7'},{m:99,n:'Eb7'},{m:102,n:'Gb7'},{m:105,n:'A7'},{m:108,n:'C8'}
+];
+const SAMPLE_BASE='https://gleitz.github.io/midi-js-soundfonts/MusyngKite/acoustic_grand_piano-mp3/';
+function findNearestSample(m){ return SAMPLE_NOTES.reduce((a,b)=>Math.abs(b.m-m)<Math.abs(a.m-m)?b:a); }
 
-    function playHapticTick(type = 'detent') {
-        if(!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(type === 'detent' ? 2000 : 150, audioCtx.currentTime);
-        g.gain.setValueAtTime(type === 'detent' ? 0.05 : 0.15, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
-        osc.connect(g);
-        g.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.03);
-    }
+async function loadPianoSamples(){
+    if (pianoLoading||pianoReady) return; pianoLoading=true;
+    try {
+        await Promise.all(SAMPLE_NOTES.map(async({m,n})=>{
+            const r=await fetch(SAMPLE_BASE+encodeURIComponent(n)+'.mp3');
+            if (!r.ok) throw new Error(n);
+            pianoBuffers[m]=await audioCtx.decodeAudioData(await r.arrayBuffer());
+        }));
+        pianoReady=true; console.log('[Virtual E-Board] Piano samples loaded \u2713');
+    } catch(e){ console.warn('[Virtual E-Board] Synth fallback active.',e.message); }
+    pianoLoading=false;
+}
 
-    function playNote(note) {
-        initAudio();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const freq = FREQS[note];
-        if (!freq) return;
+function initAudio(){
+    if (audioCtx) return;
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});
 
-        if (activeVoices.has(note)) {
-            const oldVoice = activeVoices.get(note);
-            const killTime = audioCtx.currentTime + 0.001;
-            oldVoice.gain.gain.cancelScheduledValues(audioCtx.currentTime);
-            oldVoice.gain.gain.exponentialRampToValueAtTime(0.001, killTime);
-            oldVoice.nodes.forEach(n => { try { n.stop(killTime); } catch(e) {} });
-            activeVoices.delete(note);
-        }
+    masterGain=audioCtx.createGain(); masterGain.gain.value=settings.volume;
 
-        playHapticTick('key');
-        const now = audioCtx.currentTime;
-        const voiceGain = audioCtx.createGain();
-        
-        const hammer = audioCtx.createOscillator();
-        const hGain = audioCtx.createGain();
-        const hFilter = audioCtx.createBiquadFilter();
-        hammer.type = 'sawtooth'; hammer.frequency.value = freq;
-        hFilter.type = 'highpass'; hFilter.frequency.value = 1600;
-        hGain.gain.setValueAtTime(0.12, now);
-        hGain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
-        hammer.connect(hFilter); hFilter.connect(hGain); hGain.connect(voiceGain);
+    const warmOsc = audioCtx.createOscillator();
+    const warmGain = audioCtx.createGain();
+    warmGain.gain.value = 0;
+    warmOsc.connect(warmGain);
+    warmGain.connect(masterGain);
+    warmOsc.start();
+    warmOsc.stop(audioCtx.currentTime + 0.005);
 
-        const partials = [ { type: 'sine', f: 1.0, g: 0.7 }, { type: 'triangle', f: 2.0, g: 0.1 }, { type: 'sine', f: 3.0, g: 0.04 } ].map(p => {
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.type = p.type; o.frequency.value = freq * p.f + (Math.random() * 0.1);
-            g.gain.value = p.g; o.connect(g); g.connect(voiceGain);
-            return o;
-        });
+    dryGain=audioCtx.createGain(); dryGain.gain.value=1.0;
+    masterGain.connect(dryGain); dryGain.connect(audioCtx.destination);
 
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(200 + (settings.tone * 11000), now);
-        filter.frequency.exponentialRampToValueAtTime(150, now + 5);
+    reverbNode=audioCtx.createGain(); reverbNode.gain.value=settings.reverb;
+    convolver=audioCtx.createConvolver();
+    const len=audioCtx.sampleRate*2.8, ibuf=audioCtx.createBuffer(2,len,audioCtx.sampleRate);
+    for(let ch=0;ch<2;ch++){ const d=ibuf.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.5); }
+    convolver.buffer=ibuf;
+    masterGain.connect(reverbNode); reverbNode.connect(convolver); convolver.connect(audioCtx.destination);
 
-        voiceGain.connect(filter); filter.connect(masterGain); filter.connect(reverbNode);
-        voiceGain.gain.setValueAtTime(0, now);
-        voiceGain.gain.linearRampToValueAtTime(1, now + 0.005);
-        voiceGain.gain.exponentialRampToValueAtTime(0.1, now + 7);
+    loadPianoSamples();
+    if (eqOpen2&&!eqFilters.length) setTimeout(initEQ,50);
+}
 
-        hammer.start(); partials.forEach(o => o.start());
-        activeVoices.set(note, { nodes: [hammer, ...partials], gain: voiceGain });
-    }
+function playHapticTick(type='detent'){
+    if(!audioCtx) return;
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(type==='detent'?2000:800,audioCtx.currentTime);
+    g.gain.setValueAtTime(0.025,audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.018);
+    o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.025);
+}
 
-    function stopNote(note) {
-        if (!activeVoices.has(note)) return;
-        const voice = activeVoices.get(note);
-        const now = audioCtx.currentTime;
-        const rel = Math.max(0.05, settings.sustain);
-        const endT = now + rel;
-        
-        voice.gain.gain.cancelScheduledValues(now);
-        voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
-        voice.gain.gain.exponentialRampToValueAtTime(0.001, endT);
-        
-        voice.nodes.forEach(n => { try { n.stop(endT + 0.1); } catch(e) {} });
-        activeVoices.delete(note);
-    }
+const VOICE_PEAK = 0.72;
 
-    function buildKeys() {
-        const kb = document.getElementById('keyboard');
-        Object.keys(FREQS).forEach(n => {
-            const isB = n.includes('#');
-            const div = document.createElement('div');
-            div.className = `key ${isB ? 'black-key' : 'white-key'}`;
-            div.dataset.note = n;
-            div.textContent = isB ? '' : n;
-            const start = (e) => { e.preventDefault(); playNote(n); div.classList.add('active'); };
-            const end = () => { stopNote(n); div.classList.remove('active'); };
-            div.addEventListener('mousedown', start); div.addEventListener('mouseup', end); div.addEventListener('mouseleave', end);
-            div.addEventListener('touchstart', start, {passive: false}); div.addEventListener('touchend', end, {passive: false});
-            kb.appendChild(div);
-        });
-        const c4 = document.querySelector('[data-note="C4"]');
-        if (c4) c4.scrollIntoView({ behavior: 'auto', inline: 'center' });
-    }
+function playSampledNote(freq, noteId){
+    const midi=freqToMidi(freq), samp=findNearestSample(midi), buf=pianoBuffers[samp.m];
+    if (!buf) return false;
+    const now=audioCtx.currentTime, rate=Math.pow(2,(midi-samp.m)/12);
+    const src=audioCtx.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
 
-    function switchUI() {
-        const isFader = document.getElementById('ui-mode-toggle').checked;
-        document.getElementById('panel-knobs').classList.toggle('active', !isFader);
-        document.getElementById('panel-faders').classList.toggle('active', isFader);
-        updateAllUI();
-    }
+    const toneEq=audioCtx.createBiquadFilter(); toneEq.type='highshelf';
+    toneEq.frequency.value=5000; toneEq.gain.value=-4+settings.tone*6;
 
-    function updateAllUI() {
-        const cfg = [
-            { k: 'dot-volume', f: 'cap-volume', vk: 'val-k-volume', vf: 'val-f-volume', val: settings.volume, min: 0, max: 1 },
-            { k: 'dot-tone', f: 'cap-tone', vk: 'val-k-tone', vf: 'val-f-tone', val: settings.tone, min: 0, max: 1 },
-            { k: 'dot-sustain', f: 'cap-sustain', vk: 'val-k-sustain', vf: 'val-f-sustain', val: settings.sustain, min: 0.1, max: 4 },
-            { k: 'dot-reverb', f: 'cap-reverb', vk: 'val-k-reverb', vf: 'val-f-reverb', val: settings.reverb, min: 0, max: 0.8 }
-        ];
-        cfg.forEach(c => {
-            const pctVal = Math.round(((c.val - c.min) / (c.max - c.min)) * 100);
-            document.getElementById(c.vk).innerText = pctVal + '%';
-            document.getElementById(c.vf).innerText = pctVal + '%';
-            const angle = ((c.val - c.min) / (c.max - c.min)) * 270 - 135;
-            document.getElementById(c.k).style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            const pos = 140 - (((c.val - c.min) / (c.max - c.min)) * 140);
-            document.getElementById(c.f).style.top = `${Math.max(0, Math.min(100, pos - 22))}px`;
-        });
-    }
+    const vg=audioCtx.createGain(); vg.gain.setValueAtTime(0,now); vg.gain.linearRampToValueAtTime(VOICE_PEAK,now+0.003);
+    src.connect(toneEq); toneEq.connect(vg); vg.connect(masterGain); src.start(now);
+    activeVoices.set(noteId,{nodes:[src],gain:vg,isSampled:true});
+    return true;
+}
 
-    function setupControls() {
-        const items = [
-            { id: 'volume', key: 'volume', min: 0, max: 1, act: v => { if(masterGain) masterGain.gain.value = v; } },
-            { id: 'tone', key: 'tone', min: 0, max: 1, act: v => {} },
-            { id: 'sustain', key: 'sustain', min: 0.1, max: 4, act: v => {} },
-            { id: 'reverb', key: 'reverb', min: 0, max: 0.8, act: v => { if(reverbNode) reverbNode.gain.value = v; } }
-        ];
+function playSynthNote(freq, noteId){
+    const now=audioCtx.currentTime;
+    const vg=audioCtx.createGain();
+    vg.gain.setValueAtTime(0, now);
+    vg.gain.linearRampToValueAtTime(VOICE_PEAK, now+0.004);
+    vg.gain.setTargetAtTime(VOICE_PEAK*0.6, now+0.025, 0.18);
 
-        items.forEach(c => {
-            const knob = document.getElementById(`k-${c.id}`);
-            const fader = document.getElementById(`f-${c.id}`);
-            let isD = false, lastY = 0;
-            let accumulatedValue = settings[c.key];
+    const hammer=audioCtx.createOscillator();
+    const hFilt=audioCtx.createBiquadFilter();
+    const hGain=audioCtx.createGain();
+    hammer.type='sawtooth';
+    hammer.frequency.value=freq*1.5; 
+    hFilt.type='highpass'; hFilt.frequency.value=Math.max(900, freq*1.2);
+    hGain.gain.setValueAtTime(0.18, now);
+    hGain.gain.exponentialRampToValueAtTime(0.001, now+0.038);
+    hammer.connect(hFilt); hFilt.connect(hGain); hGain.connect(vg);
 
-            const handleMove = (e) => {
-                if (!isD) return;
-                const y = e.touches ? e.touches[0].clientY : e.clientY;
-                const sensitivity = (c.max - c.min) / 180;
-                accumulatedValue += (lastY - y) * sensitivity;
-                accumulatedValue = Math.max(c.min, Math.min(c.max, accumulatedValue));
-                lastY = y;
-                const steps = 20;
-                const currentSnap = Math.round(((settings[c.key] - c.min) / (c.max - c.min)) * steps);
-                const targetSnap = Math.round(((accumulatedValue - c.min) / (c.max - c.min)) * steps);
-                if (currentSnap !== targetSnap) {
-                    playHapticTick('detent');
-                    settings[c.key] = c.min + (targetSnap / steps) * (c.max - c.min);
-                    updateAllUI(); c.act(settings[c.key]);
-                }
-            };
-
-            const start = (e) => { 
-                initAudio();
-                isD = true; lastY = e.touches ? e.touches[0].clientY : e.clientY; 
-                accumulatedValue = settings[c.key]; e.preventDefault(); 
-            };
-            [knob, fader].forEach(el => {
-                el.addEventListener('mousedown', start); el.addEventListener('touchstart', start, {passive:false});
-            });
-            window.addEventListener('mousemove', handleMove); window.addEventListener('touchmove', handleMove, {passive:false});
-            window.addEventListener('mouseup', () => isD = false); window.addEventListener('touchend', () => isD = false);
-        });
-    }
-
-    document.addEventListener('keydown', e => {
-        if (e.repeat) return; const n = KEY_MAP[e.key.toLowerCase()];
-        if (n) { playNote(n); const el = document.querySelector(`[data-note="${n}"]`); if(el) el.classList.add('active'); }
-    });
-    document.addEventListener('keyup', e => {
-        const n = KEY_MAP[e.key.toLowerCase()];
-        if (n) { stopNote(n); const el = document.querySelector(`[data-note="${n}"]`); if(el) el.classList.remove('active'); }
+    const B=0.0004; 
+    const pDefs=[
+        {n:1, g:0.72, type:'sine'},{n:2, g:0.14, type:'sine'},
+        {n:3, g:0.07, type:'sine'},{n:4, g:0.04, type:'sine'},
+        {n:5, g:0.02, type:'sine'},{n:6, g:0.01, type:'sine'},
+    ];
+    const partials=pDefs.map(p=>{
+        const inharmonicFreq=freq*p.n*Math.sqrt(1+B*p.n*p.n);
+        const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+        o.type=p.type; o.frequency.value=inharmonicFreq+(Math.random()-0.5)*0.12;
+        g.gain.value=p.g; g.gain.setTargetAtTime(p.g*0.01, now+0.1, 0.3/(p.n*0.7+0.3));
+        o.connect(g); g.connect(vg); return o;
     });
 
-    window.onload = () => { buildKeys(); setupControls(); updateAllUI(); };
+    const tf=audioCtx.createBiquadFilter(); tf.type='lowpass';
+    const openFreq=Math.min(14000, Math.max(3000, 800+settings.tone*13200));
+    tf.frequency.setValueAtTime(openFreq, now);
+    tf.frequency.exponentialRampToValueAtTime(Math.max(400, openFreq*0.12), now+5);
+    tf.Q.value=0.5;
+
+    vg.connect(tf); tf.connect(masterGain);
+    hammer.start(now); partials.forEach(o=>o.start(now));
+    activeVoices.set(noteId,{nodes:[hammer,...partials],gain:vg,isSampled:false,filter:tf});
+}
+
+function playNote(freq, noteId){
+    if(noteId && noteId.startsWith('main-')){
+        freq = freq * Math.pow(2, eboardOctaveOffset + (eboardNoteOffset/12));
+    }
+    initAudio();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    if(!freq) return;
+    if(activeVoices.has(noteId)) stopNote(noteId,true);
+    if(noteId.startsWith('main')) playHapticTick('key');
+    if(pianoReady) playSampledNote(freq,noteId);
+    else           playSynthNote(freq,noteId);
+}
+
+function stopNote(noteId, immediate=false){
+    if(!activeVoices.has(noteId)) return;
+    const v=activeVoices.get(noteId); activeVoices.delete(noteId);
+    try {
+        const now=audioCtx.currentTime;
+        const rel=immediate?0.015:Math.max(0.05,settings.sustain);
+        const endT=now+rel;
+        v.gain.gain.cancelScheduledValues(now);
+        const cur=Math.max(v.gain.gain.value, 0.001);
+        v.gain.gain.setValueAtTime(cur,now);
+        v.gain.gain.exponentialRampToValueAtTime(0.0001,endT);
+        v.nodes.forEach(n=>{ try{ n.stop(endT+0.05); }catch(e){} });
+        setTimeout(()=>{ try{v.gain.disconnect();}catch(e){} try{if(v.filter)v.filter.disconnect();}catch(e){} },(rel+0.3)*1000);
+    } catch(e){}
+}
+
+// ====================================================
+// KEYBOARD & UI
+// ====================================================
+function buildMainKeyboard(){
+    const kb=document.getElementById('kbd-main'); if(kb.children.length>0)return;
+    for(let o=0;o<=7;o++) CHROMATIC.forEach((n,i)=>{
+        if(o===0&&i<9)return; if(o===7&&i>9)return;
+        const freq=440*Math.pow(2,((o-4)*12+(i-9))/12);
+        const div=document.createElement('div'); div.className=`key ${n.includes('#')?'black-key':'white-key'}`;
+        const id='main-'+n+o;
+        div.addEventListener('mousedown',e=>{e.preventDefault();playNote(freq,id);div.classList.add('active');});
+        div.addEventListener('mouseup',()=>{stopNote(id);div.classList.remove('active');});
+        div.addEventListener('mouseleave',()=>{stopNote(id);div.classList.remove('active');});
+        div.addEventListener('touchstart',e=>{e.preventDefault();playNote(freq,id);div.classList.add('active');},{passive:false});
+        div.addEventListener('touchend',()=>{stopNote(id);div.classList.remove('active');},{passive:false});
+        kb.appendChild(div);
+    });
+    const c4=document.querySelectorAll('#kbd-main .white-key')[39]; if(c4)c4.scrollIntoView({inline:'center'});
+}
+document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.repeat)return;
+    const n=KEY_MAP[e.key.toLowerCase()];
+    if(n)playNote(FREQS[n],'main-'+n);
+});
+document.addEventListener('keyup',e=>{
+    if(e.target.tagName==='INPUT')return;
+    const n=KEY_MAP[e.key.toLowerCase()];
+    if(n)stopNote('main-'+n);
+});
+
+function switchControlUIKb(){
+    const isF=document.getElementById('ui-tog-kb').checked;
+    document.getElementById('panel-knobs-kb').classList.toggle('active',!isF);
+    document.getElementById('panel-faders-kb').classList.toggle('active',isF);
+}
+
+const FADER_TRAVEL=150-48; 
+const ctrlCfg=[
+    {id:'volume', key:'volume', min:0,    max:4,    label:v=>`${Math.round(v*100)}%`,          act:v=>{if(masterGain)masterGain.gain.value=v;}},
+    {id:'tone',   key:'tone',   min:0,    max:4,    label:v=>`${Math.round(v*100)}%`,          act:()=>{}},
+    {id:'sustain',key:'sustain',min:0.05, max:3,    label:v=>`${v.toFixed(1)}s`,               act:()=>{}},
+    {id:'reverb', key:'reverb', min:0,    max:0.8,  label:v=>`${Math.round(v*100)}%`,          act:v=>{if(reverbNode)reverbNode.gain.value=v;}}
+];
+
+function updateUI(){
+    ctrlCfg.forEach(c=>{
+        const norm=(settings[c.key]-c.min)/(c.max-c.min), lbl=c.label(settings[c.key]);
+        const kv2=document.getElementById('vk2-'+c.id), fv2=document.getElementById('vf2-'+c.id);
+        if(kv2)kv2.innerText=lbl; if(fv2)fv2.innerText=lbl;
+        const kd2=document.getElementById('dk2-'+c.id), fc2=document.getElementById('cf2-'+c.id);
+        if(kd2)kd2.style.transform=`translateX(-50%) rotate(${norm*270-135}deg)`;
+        if(fc2)fc2.style.top=`${(1-norm)*FADER_TRAVEL}px`;
+    });
+}
+
+function setupControls(){
+    function wirePair(knob, fader, c){
+        if(!knob||!fader) return;
+        const steps=20;
+        let dr=false,ly=0,acc=settings[c.key];
+        const mv=e=>{
+            if(!dr)return;
+            const y=e.touches?e.touches[0].clientY:e.clientY;
+            acc+=(ly-y)*(c.max-c.min)/180; acc=Math.max(c.min,Math.min(c.max,acc)); ly=y;
+            const norm=(acc-c.min)/(c.max-c.min), tgt=c.min+Math.round(norm*steps)/steps*(c.max-c.min);
+            if(Math.abs(settings[c.key]-tgt)>1e-9){ settings[c.key]=tgt; playHapticTick('detent'); updateUI(); c.act(tgt); }
+        };
+        const st=e=>{initAudio();dr=true;ly=e.touches?e.touches[0].clientY:e.clientY;acc=settings[c.key];e.preventDefault();};
+        [knob,fader].forEach(el=>{ el.addEventListener('mousedown',st); el.addEventListener('touchstart',st,{passive:false}); });
+        window.addEventListener('mousemove',mv); window.addEventListener('touchmove',mv,{passive:false});
+        window.addEventListener('mouseup',()=>dr=false); window.addEventListener('touchend',()=>dr=false);
+    }
+    ctrlCfg.forEach(c=>{
+        wirePair(document.getElementById('k2-'+c.id), document.getElementById('f2-'+c.id), c);
+    });
+}
+
+// ====================================================
+// EQ
+// ====================================================
+const EQ_BANDS=[
+    {freq:45,type:'lowshelf',Q:0.7},{freq:90,type:'peaking',Q:1.0},{freq:185,type:'peaking',Q:1.0},
+    {freq:375,type:'peaking',Q:1.0},{freq:1000,type:'peaking',Q:1.0},{freq:4000,type:'peaking',Q:1.2},
+    {freq:9000,type:'peaking',Q:1.0},{freq:16000,type:'highshelf',Q:0.7}
+];
+const EQ_GAIN_MIN=-12, EQ_GAIN_MAX=12, EQ_FADER_TRAVEL=100-32; 
+let eqGains=new Array(8).fill(0), eqFilters=[], eqOpen2=false;
+
+function initEQ(){
+    if(eqFilters.length)return;
+    try{masterGain.disconnect(dryGain);}catch(e){}
+    try{dryGain.disconnect(audioCtx.destination);}catch(e){}
+    eqFilters=EQ_BANDS.map(b=>{const f=audioCtx.createBiquadFilter();f.type=b.type;f.frequency.value=b.freq;f.Q.value=b.Q;f.gain.value=0;return f;});
+    masterGain.connect(eqFilters[0]);
+    eqFilters.reduce((a,b)=>{a.connect(b);return b;});
+    eqFilters[eqFilters.length-1].connect(dryGain); dryGain.connect(audioCtx.destination);
+    try{masterGain.disconnect(reverbNode);}catch(e){}
+    eqFilters[eqFilters.length-1].connect(reverbNode);
+    console.log('[Virtual E-Board] EQ wired \u2713');
+}
+
+function applyEQ(){ if(!eqFilters.length)return; eqGains.forEach((db,i)=>eqFilters[i].gain.value=db); }
+function toggleEQ2(){
+    eqOpen2=!eqOpen2;
+    document.getElementById('eqPanel2').classList.toggle('open',eqOpen2);
+    document.getElementById('eqBtn2').classList.toggle('eq-open',eqOpen2);
+    if(eqOpen2&&audioCtx&&!eqFilters.length)initEQ();
+}
+function switchEQUI2(){
+    const isF=document.getElementById('eq-tog2').checked;
+    document.getElementById('eq2-panel-knobs').classList.toggle('active',!isF);
+    document.getElementById('eq2-panel-faders').classList.toggle('active',isF);
+}
+
+function updateEQUI2(){
+    eqGains.forEach((db,i)=>{
+        const norm=(db-EQ_GAIN_MIN)/(EQ_GAIN_MAX-EQ_GAIN_MIN), lbl=(db>0?'+':'')+db.toFixed(1)+'dB';
+        const kv=document.getElementById('evk2-'+i), fv=document.getElementById('evf2-'+i);
+        if(kv)kv.innerText=lbl; if(fv)fv.innerText=lbl;
+        const kd=document.getElementById('edk2-'+i), fc=document.getElementById('ecf2-'+i);
+        if(kd)kd.style.transform=`translateX(-50%) rotate(${norm*270-135}deg)`;
+        if(fc)fc.style.top=`${(1-norm)*EQ_FADER_TRAVEL}px`;
+    });
+}
+function setupEQControls2(){
+    for(let i=0;i<8;i++){
+        const kn=document.getElementById('ek2-'+i), fd=document.getElementById('ef2-'+i);
+        if(!kn||!fd) continue;
+        let dr=false,ly=0,acc=0;
+        const mv=e=>{
+            if(!dr)return; const y=e.touches?e.touches[0].clientY:e.clientY;
+            acc+=(ly-y)*(EQ_GAIN_MAX-EQ_GAIN_MIN)/120; acc=Math.max(EQ_GAIN_MIN,Math.min(EQ_GAIN_MAX,acc)); ly=y;
+            const sn=Math.round(acc*2)/2;
+            if(eqGains[i]!==sn){ eqGains[i]=sn; updateEQUI2(); applyEQ(); if(audioCtx&&!eqFilters.length)initEQ(); }
+        };
+        const st=e=>{initAudio();dr=true;ly=e.touches?e.touches[0].clientY:e.clientY;acc=eqGains[i];e.preventDefault();};
+        [kn,fd].forEach(el=>{el.addEventListener('mousedown',st);el.addEventListener('touchstart',st,{passive:false});});
+        window.addEventListener('mousemove',mv); window.addEventListener('touchmove',mv,{passive:false});
+        window.addEventListener('mouseup',()=>dr=false); window.addEventListener('touchend',()=>dr=false);
+    }
+}
+
+// ====================================================
+// SNAPPING HAPTIC FADERS
+// ====================================================
+let noteTranspose = 0, octaveTranspose = 0;
+function initHFader(trackId, capId, min, max, onChange){
+    const track=document.getElementById(trackId), cap=document.getElementById(capId);
+    let dragging=false;
+    let lastVal = null;
+    
+    function setFromX(x){
+        const r=track.getBoundingClientRect();
+        let p=(x-r.left)/r.width; 
+        p=Math.max(0,Math.min(1,p));
+        
+        let rawVal = min + (max - min) * p;
+        let snappedVal = Math.round(rawVal); // Calculate pure integer step
+        let snappedP = (snappedVal - min) / (max - min); // Remap percentage to snap visually
+        
+        cap.style.left = (snappedP * 100) + '%';
+        
+        if (lastVal !== snappedVal) {
+            lastVal = snappedVal;
+            onChange(snappedVal);
+        }
+    }
+    
+    // Set initial position based on 0 value
+    let initialP = (0 - min) / (max - min);
+    cap.style.left = (initialP * 100) + '%';
+    
+    track.addEventListener("pointerdown",e=>{dragging=true;setFromX(e.clientX)});
+    window.addEventListener("pointermove",e=>{if(dragging)setFromX(e.clientX)});
+    window.addEventListener("pointerup",()=>dragging=false);
+}
+
+function updateTranspose(){
+    document.getElementById("hf-note-val").textContent=Math.round(noteTranspose)+" st";
+    document.getElementById("hf-oct-val").textContent=Math.round(octaveTranspose)+" oct";
+}
+
+let hapticCtx=null;
+function hapticTick(){
+    try{
+        if(!hapticCtx) hapticCtx=new (window.AudioContext||window.webkitAudioContext)();
+        if(hapticCtx.state === 'suspended') hapticCtx.resume();
+        const o=hapticCtx.createOscillator(), g=hapticCtx.createGain();
+        o.frequency.value=1200; g.gain.value=0.03;
+        o.connect(g); g.connect(hapticCtx.destination);
+        o.start(); o.stop(hapticCtx.currentTime+0.02);
+    }catch(e){}
+}
+
+window.onload=()=>{
+    buildMainKeyboard(); setupControls(); updateUI(); setupEQControls2(); updateEQUI2();
+    
+    initHFader("hf-note","hf-note-cap",-12,12,v=>{
+        if(v!==eboardNoteOffset) hapticTick();
+        noteTranspose=v; eboardNoteOffset=v; updateTranspose();
+    });
+    
+    initHFader("hf-oct","hf-oct-cap",-3,3,v=>{
+        if(v!==eboardOctaveOffset) hapticTick();
+        octaveTranspose=v; eboardOctaveOffset=v; updateTranspose();
+    });
+    
+    updateTranspose();
+};
 </script>
 </body>
 </html>
