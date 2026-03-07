@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warm Pad Studio</title>
+    <style>
+        :root {
+            --bg: #e0e5ec;
+            --shadow-dark: #a3b1c6;
+            --shadow-light: #ffffff;
+            --accent: #082567;
+            --pointer: #3498db; /* Default Blue */
+            --highlight: #f59e0b;
+        }
+        
+        /* Group Color Coding */
+        .group-note { --pointer: #3498db; }  /* Blue */
+        .group-adsr { --pointer: #e67e22; }  /* Orange */
+        .group-mod { --pointer: #9b59b6; }   /* Purple */
+        .group-fx { --pointer: #e74c3c; }    /* Red */
+        .group-eq { --pointer: #2ecc71; }    /* Green */
+        .group-master { --pointer: #f1c40f; } /* Gold */
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); font-family: 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; color: #333; overflow-x: hidden; }
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { font-size: 2.8rem; color: #2c3e50; font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
+        .header-hint { font-size: 14px; color: #7f8c8d; font-weight: 600; margin-top: -5px; }
+
+        .main-box { background-color: var(--bg); padding: 30px; border-radius: 20px; box-shadow: 15px 15px 30px rgba(163,177,198,0.5), -15px -15px 30px rgba(255,255,255,0.8); max-width: 1000px; width: 100%; margin-bottom: 30px;}
+
+        button { background-color: var(--bg); border: none; border-radius: 10px; box-shadow: 6px 6px 12px rgba(163,177,198,0.6), -6px -6px 12px var(--shadow-light); font-weight: bold; color: #2c3e50; transition: all 0.2s ease; cursor: pointer; outline: none; }
+        button:active { box-shadow: inset 4px 4px 8px rgba(163,177,198,0.7), inset -4px -4px 8px var(--shadow-light); }
+
+        .console-divider { width: 90%; height: 1px; background: linear-gradient(to right, transparent, var(--shadow-dark), transparent); opacity: 0.5; margin: 20px auto; }
+        
+        /* Dropdowns & Tools */
+        .mode-selector { margin: 0 auto 15px auto; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .mode-group { display: flex; align-items: center; gap: 8px; }
+        .mode-selector label { font-weight: 800; color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        select { background-color: var(--bg); border: none; border-radius: 8px; box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); padding: 8px 15px; color: #333; font-weight: 700; font-family: inherit; font-size: 14px; outline: none; cursor: pointer; }
+
+        .tool-row { display: flex; gap: 15px; margin-bottom: 25px; justify-content: center; width: 100%; flex-wrap: wrap; }
+        .btn-tool { padding: 8px 18px; font-size: 12px; font-weight: 800; letter-spacing: 0.5px; border-radius: 12px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+
+        /* Transport & Master Container */
+        .transport-container { display: flex; align-items: center; justify-content: center; gap: 40px; margin-bottom: 25px; background: var(--bg); padding: 20px 40px; border-radius: 20px; box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light); flex-wrap: wrap; }
+        .transport-buttons { display: flex; gap: 15px; }
+        .master-vol-wrap { display: flex; flex-direction: column; align-items: center; }
+        .btn-transport { width: 60px; height: 60px; border-radius: 50%; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .btn-transport.playing { box-shadow: inset 4px 4px 8px rgba(163,177,198,0.7), inset -4px -4px 8px var(--shadow-light); color: var(--highlight); transform: scale(0.96); }
+
+        /* Keyboard */
+        .keyboard-wrapper { background: #0a0a0a; padding: 25px 15px 15px 15px; border-radius: 12px; box-shadow: inset 0 10px 30px #000; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 20px; }
+        .keyboard-main { position: relative; height: 240px; display: inline-flex; white-space: nowrap; padding-top: 5px; }
+        .key { position: relative; user-select: none; transition: all 0.08s ease; cursor: pointer; }
+        .white-key { width: 50px; height: 100%; background: linear-gradient(to bottom, #eee 0%, #fff 8%, #fff 92%, #e0e0e0 100%); border: 1px solid #d1d1d1; border-radius: 0 0 5px 5px; z-index: 1; box-shadow: -1px 0 0 rgba(255,255,255,0.8) inset, 0 4px 6px rgba(0,0,0,0.2); }
+        .white-key.active { height: 98%; transform: translateY(3px); background: #f0f0f0; box-shadow: inset 0 10px 20px rgba(0,0,0,0.1); }
+        .black-key { width: 30px; height: 60%; background: linear-gradient(135deg, #444 0%, #222 10%, #000 30%, #000 100%); border-radius: 0 0 4px 4px; z-index: 2; margin: 0 -15px; box-shadow: -2px 2px 0 #1a1a1a, -4px 4px 10px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.15); }
+        .black-key.active { height: 59%; transform: translateY(2px); background: #000; }
+
+        /* Consoles & Cards */
+        .eboard-console { background: var(--bg); border-radius: 16px; box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light); padding: 16px 20px 20px; margin: 0 0 25px 0; display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+        .eboard-console-title { font-size: 14px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.9; margin-bottom: 5px; }
+
+        .sub-section { width: 100%; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 12px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; }
+        .sub-title { font-size: 11px; font-weight: 800; color: var(--pointer); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; width: 100%; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px; }
+
+        .voices-container { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+        .voice-card { background: var(--bg); border-radius: 16px; box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light); padding: 15px; transition: all 0.3s ease; }
+        .voice-card.disabled { opacity: 0.6; box-shadow: none; border: 1px solid #d1d9e6; }
+        
+        .voice-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: 10px; border-bottom: 1px solid transparent; transition: all 0.3s; }
+        .voice-card.expanded .voice-header { border-bottom: 1px solid rgba(163,177,198,0.3); margin-bottom: 15px; }
+        
+        .voice-title { font-size: 16px; font-weight: 800; color: var(--pointer); display: flex; align-items: center; gap: 12px; }
+        .note-display { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(145deg, #f0f0f0, #cacaca); box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: var(--pointer); border: 2px solid #fff; }
+
+        .voice-toggle-wrap { display: flex; align-items: center; gap: 15px; }
+        .expand-icon { font-size: 18px; color: #7f8c8d; font-weight: bold; transition: transform 0.3s; }
+        .voice-card.expanded .expand-icon { transform: rotate(180deg); }
+        .voice-body { display: none; flex-direction: column; align-items: center; width: 100%; }
+        .voice-card.expanded .voice-body { display: flex; }
+
+        /* Toggles & Sliders */
+        .switch-m { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch-m input { opacity: 0; width: 0; height: 0; }
+        .slider-m { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d9e6; transition: .4s; border-radius: 34px; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+        .slider-m:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background: linear-gradient(145deg, #f0f0f0, #cacaca); transition: .4s; border-radius: 50%; box-shadow: 2px 2px 4px var(--shadow-dark), -1px -1px 2px var(--shadow-light); }
+        input:checked + .slider-m { background-color: var(--bg); }
+        input:checked + .slider-m:before { transform: translateX(24px); background: var(--pointer); box-shadow: 0 0 8px var(--pointer); }
+
+        .segmented-control { position: relative; display: inline-flex; width: 200px; height: 36px; background: #d1d9e6; border-radius: 18px; box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); margin: 0 0 15px 0; }
+        .segmented-control input { display: none; }
+        .seg-slider { position: absolute; top: 3px; left: 3px; width: 94px; height: 30px; background: var(--bg); border-radius: 15px; box-shadow: 2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light); transition: transform 0.3s cubic-bezier(0.25,0.8,0.25,1); z-index: 1; }
+        .segmented-control input:checked ~ .seg-slider { transform: translateX(100px); }
+        .seg-label { flex: 1; text-align: center; line-height: 36px; font-size: 11px; font-weight: 800; color: #7f8c8d; z-index: 2; cursor: pointer; transition: color 0.3s; letter-spacing: 1px; }
+        .segmented-control input:not(:checked) ~ .seg-label.left { color: var(--accent); }
+        .segmented-control input:checked ~ .seg-label.right { color: var(--accent); }
+        
+        .ui-panel { display: none; justify-content: center; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 20px; }
+        .ui-panel.active { display: flex; }
+        .ctrl-group { display: flex; flex-direction: column; align-items: center; min-width: 65px; }
+        .label { margin-bottom: 4px; font-weight: 700; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+        .v-tag { font-family: monospace; font-size: 11px; color: #888; margin-bottom: 8px; font-weight: bold; }
+        
+        .knob-o { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); display: flex; justify-content: center; align-items: center; cursor: ns-resize; touch-action: none; }
+        .knob-i { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(145deg, #f8f9fb, #d1d9e6); box-shadow: 2px 2px 4px var(--shadow-dark); position: relative; }
+        .knob-d { width: 3px; height: 12px; background: var(--pointer); border-radius: 2px; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); transform-origin: 50% 16px; }
+        
+        .f-track { width: 12px; height: 120px; background: var(--bg); border-radius: 10px; box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); position: relative; cursor: ns-resize; touch-action: none; }
+        .f-cap { width: 32px; height: 40px; background: linear-gradient(to bottom, #f0f0f0, #bcc6d5); border-radius: 5px; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-top: 1px solid #fff; }
+        .f-cap::after { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--pointer); }
+
+        .btn-eq { padding: 6px 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px; border-radius: 15px; color: var(--accent); margin-bottom: 15px;}
+        .btn-eq.eq-open { box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light); }
+        .eq-panel { overflow: hidden; max-height: 0; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); width: 100%; }
+        .eq-panel.open { max-height: 380px; }
+        .eq-inner { padding: 10px 5px; display: flex; flex-direction: column; align-items: center;}
+        
+        .eq-seg { position: relative; display: inline-flex; width: 140px; height: 28px; background: #d1d9e6; border-radius: 14px; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); margin-bottom: 15px; }
+        .eq-seg input { display: none; }
+        .eq-seg-slider { position: absolute; top: 3px; left: 3px; width: 66px; height: 22px; background: var(--bg); border-radius: 11px; box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light); transition: transform 0.3s cubic-bezier(0.25,0.8,0.25,1); z-index: 1; }
+        .eq-seg input:checked ~ .eq-seg-slider { transform: translateX(68px); }
+        .eq-seg-label { flex: 1; text-align: center; line-height: 28px; font-size: 10px; font-weight: 800; color: #7f8c8d; z-index: 2; cursor: pointer; letter-spacing: 1px; }
+        .eq-seg input:not(:checked) ~ .eq-seg-label.left  { color: var(--accent); }
+        .eq-seg input:checked       ~ .eq-seg-label.right { color: var(--accent); }
+        
+        .eq-ui { display: none; justify-content: space-around; align-items: flex-end; width: 100%; padding: 4px 0; flex-wrap: wrap; gap: 4px; }
+        .eq-ui.active { display: flex; }
+        .eq-ctrl { display: flex; flex-direction: column; align-items: center; min-width: 48px; }
+        .eq-lbl { font-size: 8px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; text-align: center; line-height: 1.2; }
+        .eq-val { font-family: monospace; font-size: 8px; color: #888; font-weight: bold; margin-bottom: 6px; }
+        .eq-knob-o { width: 38px; height: 38px; border-radius: 50%; background: var(--bg); box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light); display: flex; justify-content: center; align-items: center; cursor: ns-resize; touch-action: none; }
+        .eq-knob-i { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(145deg,#f8f9fb,#d1d9e6); box-shadow: 2px 2px 4px var(--shadow-dark); position: relative; }
+        .eq-knob-d { width: 2px; height: 8px; background: var(--pointer); border-radius: 1px; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); transform-origin: 50% 11px; }
+        .eq-f-track { width: 8px; height: 80px; background: var(--bg); border-radius: 6px; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); position: relative; cursor: ns-resize; touch-action: none; }
+        .eq-f-cap { width: 20px; height: 26px; background: linear-gradient(to bottom,#f0f0f0,#bcc6d5); border-radius: 4px; position: absolute; left: 50%; transform: translateX(-50%); box-shadow: 0 3px 6px rgba(0,0,0,0.25); border-top: 1px solid #fff; }
+        .eq-f-cap::after { content:''; position:absolute; top:50%; left:15%; right:15%; height:2px; background:var(--pointer); }
+
+        .hfader-wrap{width:100%;max-width:380px;margin:6px auto 10px auto;display:flex;flex-direction:column;align-items:center}
+        .hfader-label{font-size:10px;font-weight:800;color:var(--accent);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+        .hfader-track{position:relative;width:100%;height:12px;border-radius:8px;background:var(--bg); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);cursor:ew-resize;touch-action:none}
+        .hfader-cap{position:absolute;top:50%;transform:translate(-50%,-50%);width:36px;height:20px;border-radius:6px; background:linear-gradient(145deg,#f0f0f0,#bcc6d5);box-shadow:0 4px 8px rgba(0,0,0,0.3); transition: left 0.1s ease-out;}
+        .hfader-cap:after{content:'';position:absolute;left:10%;right:10%;top:50%;height:2px;background:var(--pointer)}
+        .hfader-val{font-family:monospace;font-size:11px;margin-top:4px;color:#777;font-weight:bold}
+
+        .copyright { text-align: center; font-size: 12px; color: #7f8c8d; margin-top: 20px; padding-bottom: 20px;}
+
+        @media (max-width: 580px) {
+            h1 { font-size: 2.2rem; }
+            .main-box { padding: 16px 11px; }
+            .ui-panel { gap: 10px; }
+            .ctrl-group { min-width: 55px; }
+            .eq-ui { gap: 2px; }
+            .eq-ctrl { min-width: 38px; }
+            .transport-container { gap: 20px; padding: 15px 20px; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Warm Pad</h1>
+    <div class="header-hint">(Multi-Voice Polyphonic Synthesizer)</div>
+</header>
+
+<div class="main-box">
+    
+    <div class="mode-selector">
+        <div class="mode-group">
+            <label for="rootSelect">Pad Root:</label>
+            <select id="rootSelect" onchange="updateAllNotes(); if(isContinuousPlaying) playContinuous()">
+                <option value="C" selected>C</option><option value="C#">C#</option>
+                <option value="D">D</option><option value="D#">D#</option>
+                <option value="E">E</option><option value="F">F</option>
+                <option value="F#">F#</option><option value="G">G</option>
+                <option value="G#">G#</option><option value="A">A</option>
+                <option value="A#">A#</option><option value="B">B</option>
+            </select>
+        </div>
+        <div class="mode-group">
+            <label for="chordSelect">Chord Type:</label>
+            <select id="chordSelect" onchange="changeChord()">
+                <option value="single">Single Note</option>
+                <option value="major" selected>Major Chord</option>
+                <option value="minor">Minor Chord</option>
+                <option value="maj7">Major 7th</option>
+                <option value="min7">Minor 7th</option>
+                <option value="dom7">Dominant 7th</option>
+                <option value="dim">Diminished</option>
+                <option value="aug">Augmented</option>
+                <option value="sus2">Sus2</option>
+                <option value="sus4">Sus4</option>
+                <option value="add9">Add9</option>
+                <option value="custom">Custom Chord</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="tool-row">
+        <button class="btn-tool" onclick="randomizeSounds()">&#127922; Randomize Sounds</button>
+        <button class="btn-tool" onclick="resetPad()">&#8634; Reset All</button>
+    </div>
+
+    <div class="transport-container">
+        <div class="transport-buttons">
+            <button class="btn-transport" id="playPadBtn" onclick="toggleContinuousPlay()" title="Play Continuous Pad">&#9654;</button>
+            <button class="btn-transport" id="stopPadBtn" onclick="stopContinuousPlay()" title="Stop Pad">&#9209;</button>
+        </div>
+        <div class="master-vol-wrap group-master">
+            <div class="ui-panel g-panels-k active">
+                <div class="ctrl-group"><span class="label">Master Vol</span><span class="v-tag" id="g-vk-masterVol">80%</span><div class="knob-o" id="g-k-masterVol"><div class="knob-i"><div class="knob-d" id="g-dk-masterVol"></div></div></div></div>
+            </div>
+            <div class="ui-panel g-panels-f">
+                <div class="ctrl-group"><span class="label">Master Vol</span><span class="v-tag" id="g-vf-masterVol">80%</span><div class="f-track" id="g-f-masterVol"><div class="f-cap" id="g-cf-masterVol"></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="keyboard-wrapper">
+        <div class="keyboard-main" id="kbd-main"></div>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#888;margin-bottom:20px;">(Scroll to explore full A0–A7 range)</p>
+
+    <div class="eboard-console" id="global-console">
+        <span class="eboard-console-title">Global Master Controls</span>
+        
+        <div class="segmented-control">
+            <input type="checkbox" id="g-ui-tog" onchange="switchGlobalUI()">
+            <div class="seg-slider"></div>
+            <label for="g-ui-tog" class="seg-label left">KNOBS</label>
+            <label for="g-ui-tog" class="seg-label right">FADERS</label>
+        </div>
+        
+        <div class="sub-section group-adsr">
+            <div class="sub-title">Global Envelope (ADSR)</div>
+            <div class="ui-panel g-panels-k active">
+                <div class="ctrl-group"><span class="label">Attack</span><span class="v-tag" id="g-vk-attack">0.8s</span><div class="knob-o" id="g-k-attack"><div class="knob-i"><div class="knob-d" id="g-dk-attack"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Decay</span><span class="v-tag" id="g-vk-decay">2.0s</span><div class="knob-o" id="g-k-decay"><div class="knob-i"><div class="knob-d" id="g-dk-decay"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Sustain</span><span class="v-tag" id="g-vk-sustain">80%</span><div class="knob-o" id="g-k-sustain"><div class="knob-i"><div class="knob-d" id="g-dk-sustain"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Release</span><span class="v-tag" id="g-vk-release">2.5s</span><div class="knob-o" id="g-k-release"><div class="knob-i"><div class="knob-d" id="g-dk-release"></div></div></div></div>
+            </div>
+            <div class="ui-panel g-panels-f">
+                <div class="ctrl-group"><span class="label">Attack</span><span class="v-tag" id="g-vf-attack">0.8s</span><div class="f-track" id="g-f-attack"><div class="f-cap" id="g-cf-attack"></div></div></div>
+                <div class="ctrl-group"><span class="label">Decay</span><span class="v-tag" id="g-vf-decay">2.0s</span><div class="f-track" id="g-f-decay"><div class="f-cap" id="g-cf-decay"></div></div></div>
+                <div class="ctrl-group"><span class="label">Sustain</span><span class="v-tag" id="g-vf-sustain">80%</span><div class="f-track" id="g-f-sustain"><div class="f-cap" id="g-cf-sustain"></div></div></div>
+                <div class="ctrl-group"><span class="label">Release</span><span class="v-tag" id="g-vf-release">2.5s</span><div class="f-track" id="g-f-release"><div class="f-cap" id="g-cf-release"></div></div></div>
+            </div>
+        </div>
+
+        <div class="sub-section group-mod">
+            <div class="sub-title">Modulators</div>
+            <div class="ui-panel g-panels-k active">
+                <div class="ctrl-group"><span class="label">Vib Rate</span><span class="v-tag" id="g-vk-vibRate">4.5Hz</span><div class="knob-o" id="g-k-vibRate"><div class="knob-i"><div class="knob-d" id="g-dk-vibRate"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Vib Depth</span><span class="v-tag" id="g-vk-vibDepth">15c</span><div class="knob-o" id="g-k-vibDepth"><div class="knob-i"><div class="knob-d" id="g-dk-vibDepth"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Osc Rate</span><span class="v-tag" id="g-vk-oscRate">2.0Hz</span><div class="knob-o" id="g-k-oscRate"><div class="knob-i"><div class="knob-d" id="g-dk-oscRate"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Osc Depth</span><span class="v-tag" id="g-vk-oscDepth">10%</span><div class="knob-o" id="g-k-oscDepth"><div class="knob-i"><div class="knob-d" id="g-dk-oscDepth"></div></div></div></div>
+            </div>
+            <div class="ui-panel g-panels-f">
+                <div class="ctrl-group"><span class="label">Vib Rate</span><span class="v-tag" id="g-vf-vibRate">4.5Hz</span><div class="f-track" id="g-f-vibRate"><div class="f-cap" id="g-cf-vibRate"></div></div></div>
+                <div class="ctrl-group"><span class="label">Vib Depth</span><span class="v-tag" id="g-vf-vibDepth">15c</span><div class="f-track" id="g-f-vibDepth"><div class="f-cap" id="g-cf-vibDepth"></div></div></div>
+                <div class="ctrl-group"><span class="label">Osc Rate</span><span class="v-tag" id="g-vf-oscRate">2.0Hz</span><div class="f-track" id="g-f-oscRate"><div class="f-cap" id="g-cf-oscRate"></div></div></div>
+                <div class="ctrl-group"><span class="label">Osc Depth</span><span class="v-tag" id="g-vf-oscDepth">10%</span><div class="f-track" id="g-f-oscDepth"><div class="f-cap" id="g-cf-oscDepth"></div></div></div>
+            </div>
+        </div>
+
+        <div class="sub-section group-fx">
+            <div class="sub-title">Global Effects</div>
+            <div class="ui-panel g-panels-k active">
+                <div class="ctrl-group"><span class="label">Reverb Level</span><span class="v-tag" id="g-vk-reverbLvl">50%</span><div class="knob-o" id="g-k-reverbLvl"><div class="knob-i"><div class="knob-d" id="g-dk-reverbLvl"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Delay Mix</span><span class="v-tag" id="g-vk-delayMix">0%</span><div class="knob-o" id="g-k-delayMix"><div class="knob-i"><div class="knob-d" id="g-dk-delayMix"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Delay Time</span><span class="v-tag" id="g-vk-delayTime">0.4s</span><div class="knob-o" id="g-k-delayTime"><div class="knob-i"><div class="knob-d" id="g-dk-delayTime"></div></div></div></div>
+                <div class="ctrl-group"><span class="label">Delay F.B.</span><span class="v-tag" id="g-vk-delayFeedback">30%</span><div class="knob-o" id="g-k-delayFeedback"><div class="knob-i"><div class="knob-d" id="g-dk-delayFeedback"></div></div></div></div>
+            </div>
+            <div class="ui-panel g-panels-f">
+                <div class="ctrl-group"><span class="label">Reverb Level</span><span class="v-tag" id="g-vf-reverbLvl">50%</span><div class="f-track" id="g-f-reverbLvl"><div class="f-cap" id="g-cf-reverbLvl"></div></div></div>
+                <div class="ctrl-group"><span class="label">Delay Mix</span><span class="v-tag" id="g-vf-delayMix">0%</span><div class="f-track" id="g-f-delayMix"><div class="f-cap" id="g-cf-delayMix"></div></div></div>
+                <div class="ctrl-group"><span class="label">Delay Time</span><span class="v-tag" id="g-vf-delayTime">0.4s</span><div class="f-track" id="g-f-delayTime"><div class="f-cap" id="g-cf-delayTime"></div></div></div>
+                <div class="ctrl-group"><span class="label">Delay F.B.</span><span class="v-tag" id="g-vf-delayFeedback">30%</span><div class="f-track" id="g-f-delayFeedback"><div class="f-cap" id="g-cf-delayFeedback"></div></div></div>
+            </div>
+        </div>
+
+        <button class="btn-eq group-eq" id="g-eqBtn" style="margin-top: 10px;" onclick="toggleGlobalEQ()">&#9195; MASTER EQ</button>
+        <div class="eq-panel group-eq" id="g-eqPanel">
+            <div class="eq-inner">
+                <div class="eq-seg">
+                    <input type="checkbox" id="g-eq-tog" onchange="switchGlobalEQUI()">
+                    <div class="eq-seg-slider"></div>
+                    <label for="g-eq-tog" class="eq-seg-label left">KNOBS</label>
+                    <label for="g-eq-tog" class="eq-seg-label right">FADERS</label>
+                </div>
+                <div id="g-eq-panel-knobs" class="eq-ui active">
+                    </div>
+                <div id="g-eq-panel-faders" class="eq-ui">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="voices-container" id="voices-container">
+        </div>
+
+</div>
+
+<div class="copyright">&copy; Sai Sudeep Das (2026)</div>
+
+<script>
+// ====================================================
+// STATE MANAGEMENT & GLOBALS
+// ====================================================
+const CHROMATIC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const KEY_MAP={a:'C4',w:'C#4',s:'D4',e:'D#4',d:'E4',f:'F4',t:'F#4',g:'G4',y:'G#4',h:'A4',u:'A#4',j:'B4',k:'C5'};
+const FREQS={};
+for (let o=0;o<=7;o++) CHROMATIC.forEach((n,i)=>{
+    if(o===0&&i<9)return; if(o===7&&i>9)return;
+    FREQS[n+o]=440*Math.pow(2,((o-4)*12+(i-9))/12);
+});
+
+const SOUND_TYPES = ['sine_pad', 'soft_brass', 'glassy_synth', 'deep_bass'];
+const MAX_VOICES = 6;
+const EQ_BANDS=[
+    {freq:45,type:'lowshelf',Q:0.7},{freq:90,type:'peaking',Q:1.0},{freq:185,type:'peaking',Q:1.0},
+    {freq:375,type:'peaking',Q:1.0},{freq:1000,type:'peaking',Q:1.0},{freq:4000,type:'peaking',Q:1.2},
+    {freq:9000,type:'peaking',Q:1.0},{freq:16000,type:'highshelf',Q:0.7}
+];
+const EQ_GAIN_MIN=-12, EQ_GAIN_MAX=12; 
+
+const CHORD_DICT = {
+    'single': [0],
+    'major': [0, 4, 7],
+    'minor': [0, 3, 7],
+    'maj7': [0, 4, 7, 11],
+    'min7': [0, 3, 7, 10],
+    'dom7': [0, 4, 7, 10],
+    'dim': [0, 3, 6],
+    'aug': [0, 4, 8],
+    'sus2': [0, 2, 7],
+    'sus4': [0, 5, 7],
+    'add9': [0, 4, 7, 14]
+};
+
+// Global Modulators, FX & ADSR State
+let globalState = {};
+// Per-Voice State
+let padState = [];
+
+function initDefaultState() {
+    globalState = {
+        attack: 0.8, decay: 2.0, sustain: 0.8, release: 2.5,
+        vibRate: 4.5, vibDepth: 15, 
+        oscRate: 2.0, oscDepth: 0.1, 
+        reverbLvl: 0.5, delayMix: 0.0, delayTime: 0.4, delayFeedback: 0.3,
+        masterVol: 0.8,
+        eq: [0,0,0,0,0,0,0,0],
+        eqExpanded: false
+    };
+    for(let i=1; i<=MAX_VOICES; i++){
+        padState[i] = {
+            enabled: i <= 3, 
+            type: 'sine_pad',
+            note: i === 1 ? 0 : i === 2 ? 4 : i === 3 ? 7 : 0,
+            oct: 0,
+            volume: i === 1 ? 0.8 : 0.6,
+            tone: 0.3,
+            reverbSend: 0.4, 
+            eq: [0,0,0,0,0,0,0,0],
+            expanded: false,
+            eqExpanded: false
+        };
+    }
+}
+initDefaultState();
+
+let audioCtx;
+let masterBus, preMasterBus, convolver, globalReverbGain;
+let globalDelayNode, delayFeedbackGain, delayWetGain, masterVolGain;
+let globalTremolo, globalOscLFO, globalOscGain, globalVibLFO, globalVibGain;
+let globalEqNodes = [];
+let activeNotes = new Map();
+let hapticCtx=null;
+let isContinuousPlaying = false;
+
+// Helpers
+function calculateNoteName(rootStr, semiOffset, octOffset) {
+    let baseIndex = CHROMATIC.indexOf(rootStr);
+    let totalSemitones = baseIndex + semiOffset + (octOffset * 12);
+    let absoluteSemi = (4 * 12) + totalSemitones; // Base Octave is 4
+    let finalOctave = Math.floor(absoluteSemi / 12);
+    let finalNoteIndex = absoluteSemi % 12;
+    if (finalNoteIndex < 0) { finalNoteIndex += 12; finalOctave -= 1; }
+    return CHROMATIC[finalNoteIndex] + finalOctave;
+}
+
+// ====================================================
+// UI GENERATOR & WIRING
+// ====================================================
+function initUI() {
+    // Generate Global EQ UI
+    let geqk = '', geqf = '';
+    const lbls = ['Sub','Bass','L-Mid','Mid','Pres','U-Mid','High','Bril'];
+    for(let b=0; b<8; b++) {
+        geqk += `<div class="eq-ctrl"><span class="eq-lbl">${lbls[b]}</span><span class="eq-val" id="g-evk-${b}">0dB</span><div class="eq-knob-o" id="g-ek-${b}"><div class="eq-knob-i"><div class="eq-knob-d" id="g-edk-${b}"></div></div></div></div>`;
+        geqf += `<div class="eq-ctrl"><span class="eq-lbl">${lbls[b]}</span><span class="eq-val" id="g-evf-${b}">0dB</span><div class="eq-f-track" id="g-ef-${b}"><div class="eq-f-cap" id="g-ecf-${b}"></div></div></div>`;
+    }
+    document.getElementById('g-eq-panel-knobs').innerHTML = geqk;
+    document.getElementById('g-eq-panel-faders').innerHTML = geqf;
+
+    // Generate Voice UI (Assigned to Note Group Color)
+    const container = document.getElementById('voices-container');
+    let html = '';
+    for(let i=1; i<=MAX_VOICES; i++) {
+        html += `
+        <div class="voice-card group-note ${padState[i].enabled ? '' : 'disabled'}" id="vcard-${i}">
+            <div class="voice-header" onclick="toggleExpand(${i})">
+                <div class="voice-title">
+                    <div class="note-display" id="v${i}-note-disp">C4</div>
+                    <span>Slot ${i} ${i===1 ? '(Base)' : ''}</span>
+                </div>
+                <div class="voice-toggle-wrap">
+                    <label class="switch-m" onclick="event.stopPropagation()">
+                        <input type="checkbox" id="v${i}-en" ${padState[i].enabled ? 'checked' : ''} onchange="toggleEnable(${i})">
+                        <span class="slider-m"></span>
+                    </label>
+                    <div class="expand-icon" id="vicon-${i}">&#9660;</div>
+                </div>
+            </div>
+            <div class="voice-body" id="vbody-${i}">
+                
+                <div class="mode-group" style="margin-bottom:20px; width:100%; justify-content:center;">
+                    <label for="v${i}-type">Sound Type:</label>
+                    <select id="v${i}-type" onchange="changeVoiceType(${i}, this.value)">
+                        <option value="sine_pad">Sine Pad</option>
+                        <option value="soft_brass">Soft Brass</option>
+                        <option value="glassy_synth">Glassy Synth</option>
+                        <option value="deep_bass">Deep Bass</option>
+                    </select>
+                </div>
+
+                <div class="hfader-wrap">
+                    <span class="hfader-label">Note Transpose</span>
+                    <div class="hfader-track" id="v${i}-hf-note"><div class="hfader-cap" id="v${i}-hf-note-cap"></div></div>
+                    <span class="hfader-val" id="v${i}-hf-note-val">${padState[i].note} st</span>
+                </div>
+
+                <div class="hfader-wrap">
+                    <span class="hfader-label">Octave Transpose</span>
+                    <div class="hfader-track" id="v${i}-hf-oct"><div class="hfader-cap" id="v${i}-hf-oct-cap"></div></div>
+                    <span class="hfader-val" id="v${i}-hf-oct-val">${padState[i].oct} oct</span>
+                </div>
+
+                <div class="console-divider"></div>
+
+                <div class="segmented-control">
+                    <input type="checkbox" id="v${i}-ui-tog" onchange="switchVoiceUI(${i})">
+                    <div class="seg-slider"></div>
+                    <label for="v${i}-ui-tog" class="seg-label left">KNOBS</label>
+                    <label for="v${i}-ui-tog" class="seg-label right">FADERS</label>
+                </div>
+                
+                <div id="v${i}-panel-knobs" class="ui-panel active">
+                    <div class="ctrl-group"><span class="label">Volume</span><span class="v-tag" id="v${i}-vk-volume">80%</span><div class="knob-o" id="v${i}-k-volume"><div class="knob-i"><div class="knob-d" id="v${i}-dk-volume"></div></div></div></div>
+                    <div class="ctrl-group"><span class="label">Tone</span><span class="v-tag" id="v${i}-vk-tone">30%</span><div class="knob-o" id="v${i}-k-tone"><div class="knob-i"><div class="knob-d" id="v${i}-dk-tone"></div></div></div></div>
+                    <div class="ctrl-group"><span class="label">Rev Send</span><span class="v-tag" id="v${i}-vk-reverbSend">40%</span><div class="knob-o" id="v${i}-k-reverbSend"><div class="knob-i"><div class="knob-d" id="v${i}-dk-reverbSend"></div></div></div></div>
+                </div>
+                <div id="v${i}-panel-faders" class="ui-panel">
+                    <div class="ctrl-group"><span class="label">Volume</span><span class="v-tag" id="v${i}-vf-volume">80%</span><div class="f-track" id="v${i}-f-volume"><div class="f-cap" id="v${i}-cf-volume"></div></div></div>
+                    <div class="ctrl-group"><span class="label">Tone</span><span class="v-tag" id="v${i}-vf-tone">30%</span><div class="f-track" id="v${i}-f-tone"><div class="f-cap" id="v${i}-cf-tone"></div></div></div>
+                    <div class="ctrl-group"><span class="label">Rev Send</span><span class="v-tag" id="v${i}-vf-reverbSend">40%</span><div class="f-track" id="v${i}-f-reverbSend"><div class="f-cap" id="v${i}-cf-reverbSend"></div></div></div>
+                </div>
+
+                <div class="console-divider"></div>
+                <button class="btn-eq group-note" id="v${i}-eqBtn" onclick="toggleEQ(${i})">&#9195; VOICE EQ</button>
+                
+                <div class="eq-panel group-note" id="v${i}-eqPanel">
+                    <div class="eq-inner">
+                        <div class="eq-seg">
+                            <input type="checkbox" id="v${i}-eq-tog" onchange="switchVoiceEQUI(${i})">
+                            <div class="eq-seg-slider"></div>
+                            <label for="v${i}-eq-tog" class="eq-seg-label left">KNOBS</label>
+                            <label for="v${i}-eq-tog" class="eq-seg-label right">FADERS</label>
+                        </div>
+                        
+                        <div id="v${i}-eq-panel-knobs" class="eq-ui active">
+                            ${[0,1,2,3,4,5,6,7].map(b => `
+                            <div class="eq-ctrl"><span class="eq-lbl">${lbls[b]}</span><span class="eq-val" id="v${i}-evk-${b}">0dB</span><div class="eq-knob-o" id="v${i}-ek-${b}"><div class="eq-knob-i"><div class="eq-knob-d" id="v${i}-edk-${b}"></div></div></div></div>
+                            `).join('')}
+                        </div>
+                        <div id="v${i}-eq-panel-faders" class="eq-ui">
+                            ${[0,1,2,3,4,5,6,7].map(b => `
+                            <div class="eq-ctrl"><span class="eq-lbl">${lbls[b]}</span><span class="eq-val" id="v${i}-evf-${b}">0dB</span><div class="eq-f-track" id="v${i}-ef-${b}"><div class="eq-f-cap" id="v${i}-ecf-${b}"></div></div></div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    container.innerHTML = html;
+}
+
+const FADER_TRAVEL=120-40; 
+const EQ_FADER_TRAVEL=80-26; 
+
+// Reset & Randomize Tools
+function randomizeSounds() {
+    for(let i=1; i<=MAX_VOICES; i++) {
+        const rndType = SOUND_TYPES[Math.floor(Math.random() * SOUND_TYPES.length)];
+        padState[i].type = rndType;
+        document.getElementById(`v${i}-type`).value = rndType;
+    }
+    if (isContinuousPlaying) playContinuous();
+}
+
+function resetPad() {
+    initDefaultState();
+    document.getElementById('rootSelect').value = 'C';
+    document.getElementById('chordSelect').value = 'major';
+    
+    updateGlobalUI();
+    for(let i=1; i<=MAX_VOICES; i++) {
+        document.getElementById(`vcard-${i}`).classList.toggle('disabled', !padState[i].enabled);
+        document.getElementById(`v${i}-en`).checked = padState[i].enabled;
+        document.getElementById(`v${i}-type`).value = padState[i].type;
+        const nNorm = (padState[i].note + 12) / 24;
+        const oNorm = (padState[i].oct + 3) / 6;
+        document.getElementById(`v${i}-hf-note-cap`).style.left = (nNorm*100)+'%';
+        document.getElementById(`v${i}-hf-oct-cap`).style.left = (oNorm*100)+'%';
+        updateVoiceUI(i);
+    }
+    applyLiveGlobals();
+    applyLiveGlobalEQ();
+    if (isContinuousPlaying) playContinuous();
+}
+
+function switchGlobalUI() {
+    const isF = document.getElementById(`g-ui-tog`).checked;
+    const ks = document.querySelectorAll('.g-panels-k');
+    const fs = document.querySelectorAll('.g-panels-f');
+    ks.forEach(k => k.classList.toggle('active', !isF));
+    fs.forEach(f => f.classList.toggle('active', isF));
+}
+
+function toggleGlobalEQ() {
+    globalState.eqExpanded = !globalState.eqExpanded;
+    document.getElementById(`g-eqPanel`).classList.toggle('open', globalState.eqExpanded);
+    document.getElementById(`g-eqBtn`).classList.toggle('eq-open', globalState.eqExpanded);
+}
+
+function switchGlobalEQUI() {
+    const isF = document.getElementById(`g-eq-tog`).checked;
+    document.getElementById(`g-eq-panel-knobs`).classList.toggle('active', !isF);
+    document.getElementById(`g-eq-panel-faders`).classList.toggle('active', isF);
+}
+
+function toggleExpand(i) {
+    padState[i].expanded = !padState[i].expanded;
+    document.getElementById(`vcard-${i}`).classList.toggle('expanded', padState[i].expanded);
+}
+
+function toggleEnable(i) {
+    padState[i].enabled = document.getElementById(`v${i}-en`).checked;
+    document.getElementById(`vcard-${i}`).classList.toggle('disabled', !padState[i].enabled);
+    checkCustomMode();
+}
+
+function switchVoiceUI(i) {
+    const isF = document.getElementById(`v${i}-ui-tog`).checked;
+    document.getElementById(`v${i}-panel-knobs`).classList.toggle('active', !isF);
+    document.getElementById(`v${i}-panel-faders`).classList.toggle('active', isF);
+}
+
+function toggleEQ(i) {
+    padState[i].eqExpanded = !padState[i].eqExpanded;
+    document.getElementById(`v${i}-eqPanel`).classList.toggle('open', padState[i].eqExpanded);
+    document.getElementById(`v${i}-eqBtn`).classList.toggle('eq-open', padState[i].eqExpanded);
+}
+
+function switchVoiceEQUI(i) {
+    const isF = document.getElementById(`v${i}-eq-tog`).checked;
+    document.getElementById(`v${i}-eq-panel-knobs`).classList.toggle('active', !isF);
+    document.getElementById(`v${i}-eq-panel-faders`).classList.toggle('active', isF);
+}
+
+function changeVoiceType(i, val) {
+    padState[i].type = val;
+    if(isContinuousPlaying) playContinuous();
+}
+
+function updateAllNotes() {
+    for(let i=1; i<=MAX_VOICES; i++) updateVoiceUI(i);
+}
+
+// UI UPDATE LOGIC
+function updateGlobalUI() {
+    const pCfg = [
+        {id:'attack', val:globalState.attack, min:0.01, max:5.0, unit:'s', dec:1},
+        {id:'decay', val:globalState.decay, min:0.1, max:5.0, unit:'s', dec:1},
+        {id:'sustain', val:globalState.sustain, min:0, max:1, unit:'%', dec:0, mult:100},
+        {id:'release', val:globalState.release, min:0.1, max:5.0, unit:'s', dec:1},
+        {id:'vibRate', val:globalState.vibRate, min:1, max:10, unit:'Hz', dec:1},
+        {id:'vibDepth', val:globalState.vibDepth, min:0, max:100, unit:'c', dec:0},
+        {id:'oscRate', val:globalState.oscRate, min:0.5, max:10, unit:'Hz', dec:1},
+        {id:'oscDepth', val:globalState.oscDepth, min:0, max:1.0, unit:'%', dec:0, mult:100},
+        {id:'reverbLvl', val:globalState.reverbLvl, min:0, max:1.0, unit:'%', dec:0, mult:100},
+        {id:'delayMix', val:globalState.delayMix, min:0, max:1.0, unit:'%', dec:0, mult:100},
+        {id:'delayTime', val:globalState.delayTime, min:0.05, max:1.5, unit:'s', dec:2},
+        {id:'delayFeedback', val:globalState.delayFeedback, min:0, max:0.9, unit:'%', dec:0, mult:100},
+        {id:'masterVol', val:globalState.masterVol, min:0, max:1.5, unit:'%', dec:0, mult:100}
+    ];
+
+    pCfg.forEach(p => {
+        const norm = (p.val - p.min)/(p.max - p.min);
+        let lblVal = p.mult ? p.val * p.mult : p.val;
+        const lbl = `${lblVal.toFixed(p.dec)}${p.unit}`;
+        
+        document.getElementById(`g-vk-${p.id}`).innerText = lbl;
+        document.getElementById(`g-vf-${p.id}`).innerText = lbl;
+        document.getElementById(`g-dk-${p.id}`).style.transform = `translateX(-50%) rotate(${norm*270-135}deg)`;
+        document.getElementById(`g-cf-${p.id}`).style.top = `${(1-norm)*FADER_TRAVEL}px`;
+    });
+
+    for(let b=0; b<8; b++) {
+        const norm = (globalState.eq[b]-EQ_GAIN_MIN)/(EQ_GAIN_MAX-EQ_GAIN_MIN);
+        const lbl = (globalState.eq[b]>0?'+':'') + globalState.eq[b].toFixed(1) + 'dB';
+        document.getElementById(`g-evk-${b}`).innerText = lbl;
+        document.getElementById(`g-evf-${b}`).innerText = lbl;
+        document.getElementById(`g-edk-${b}`).style.transform = `translateX(-50%) rotate(${norm*270-135}deg)`;
+        document.getElementById(`g-ecf-${b}`).style.top = `${(1-norm)*EQ_FADER_TRAVEL}px`;
+    }
+}
+
+function updateVoiceUI(i) {
+    const s = padState[i];
+    
+    const rootStr = document.getElementById('rootSelect').value;
+    document.getElementById(`v${i}-note-disp`).innerText = calculateNoteName(rootStr, s.note, s.oct);
+
+    document.getElementById(`v${i}-hf-note-val`).innerText = `${s.note} st`;
+    document.getElementById(`v${i}-hf-oct-val`).innerText = `${s.oct} oct`;
+
+    const pCfg = [
+        {id:'volume', val:s.volume, min:0, max:1},
+        {id:'tone', val:s.tone, min:0, max:1},
+        {id:'reverbSend', val:s.reverbSend, min:0, max:1}
+    ];
+    pCfg.forEach(p => {
+        const norm = (p.val - p.min)/(p.max - p.min);
+        const lbl = `${Math.round(p.val*100)}%`;
+        document.getElementById(`v${i}-vk-${p.id}`).innerText = lbl;
+        document.getElementById(`v${i}-vf-${p.id}`).innerText = lbl;
+        document.getElementById(`v${i}-dk-${p.id}`).style.transform = `translateX(-50%) rotate(${norm*270-135}deg)`;
+        document.getElementById(`v${i}-cf-${p.id}`).style.top = `${(1-norm)*FADER_TRAVEL}px`;
+    });
+
+    for(let b=0; b<8; b++) {
+        const norm = (s.eq[b]-EQ_GAIN_MIN)/(EQ_GAIN_MAX-EQ_GAIN_MIN);
+        const lbl = (s.eq[b]>0?'+':'') + s.eq[b].toFixed(1) + 'dB';
+        document.getElementById(`v${i}-evk-${b}`).innerText = lbl;
+        document.getElementById(`v${i}-evf-${b}`).innerText = lbl;
+        document.getElementById(`v${i}-edk-${b}`).style.transform = `translateX(-50%) rotate(${norm*270-135}deg)`;
+        document.getElementById(`v${i}-ecf-${b}`).style.top = `${(1-norm)*EQ_FADER_TRAVEL}px`;
+    }
+}
+
+function wirePair(knob, fader, min, max, getVal, setVal, onUpdate) {
+    if(!knob||!fader) return;
+    const steps=40;
+    let dr=false, ly=0, acc=0;
+    const mv=e=>{
+        if(!dr)return; const y=e.touches?e.touches[0].clientY:e.clientY;
+        acc+=(ly-y)*(max-min)/150; acc=Math.max(min,Math.min(max,acc)); ly=y;
+        const tgt=min+Math.round(((acc-min)/(max-min))*steps)/steps*(max-min);
+        if(Math.abs(getVal()-tgt)>1e-9){ setVal(tgt); onUpdate(); }
+    };
+    const st=e=>{if(!audioCtx)initAudio(); dr=true;ly=e.touches?e.touches[0].clientY:e.clientY;acc=getVal();e.preventDefault();};
+    [knob,fader].forEach(el=>{ el.addEventListener('mousedown',st); el.addEventListener('touchstart',st,{passive:false}); });
+    window.addEventListener('mousemove',mv); window.addEventListener('touchmove',mv,{passive:false});
+    window.addEventListener('mouseup',()=>dr=false); window.addEventListener('touchend',()=>dr=false);
+}
+
+function wireHaptic(trackId, capId, min, max, getVal, setVal, onUpdate) {
+    const track=document.getElementById(trackId), cap=document.getElementById(capId);
+    if(!track||!cap) return;
+    let dragging=false; let lastVal=getVal();
+    
+    function updateVisuals(val) {
+        let p = (val - min)/(max - min);
+        cap.style.left = (p * 100) + '%';
+    }
+    updateVisuals(lastVal);
+
+    function setFromX(x){
+        const r=track.getBoundingClientRect();
+        let p=(x-r.left)/r.width; p=Math.max(0,Math.min(1,p));
+        let rawVal = min + (max - min) * p;
+        let snappedVal = Math.round(rawVal);
+        updateVisuals(snappedVal);
+        if (lastVal !== snappedVal) {
+            lastVal = snappedVal; setVal(snappedVal); onUpdate();
+            hapticTick(); checkCustomMode();
+        }
+    }
+    track.addEventListener("pointerdown",e=>{dragging=true;setFromX(e.clientX)});
+    window.addEventListener("pointermove",e=>{if(dragging)setFromX(e.clientX)});
+    window.addEventListener("pointerup",()=>dragging=false);
+}
+
+function wireControls() {
+    // Wire Globals
+    const gCfg = [
+        {id:'attack', k:'attack', min:0.01, max:5.0}, {id:'decay', k:'decay', min:0.1, max:5.0},
+        {id:'sustain', k:'sustain', min:0, max:1}, {id:'release', k:'release', min:0.1, max:5.0},
+        {id:'vibRate', k:'vibRate', min:1, max:10}, {id:'vibDepth', k:'vibDepth', min:0, max:100},
+        {id:'oscRate', k:'oscRate', min:0.5, max:10}, {id:'oscDepth', k:'oscDepth', min:0, max:1.0},
+        {id:'reverbLvl', k:'reverbLvl', min:0, max:1.0}, {id:'delayMix', k:'delayMix', min:0, max:1.0},
+        {id:'delayTime', k:'delayTime', min:0.05, max:1.5}, {id:'delayFeedback', k:'delayFeedback', min:0, max:0.9},
+        {id:'masterVol', k:'masterVol', min:0, max:1.5}
+    ];
+    gCfg.forEach(p => {
+        wirePair(document.getElementById(`g-k-${p.id}`), document.getElementById(`g-f-${p.id}`), p.min, p.max,
+            ()=>globalState[p.k], v=>{globalState[p.k]=v; updateGlobalUI(); applyLiveGlobals();});
+    });
+
+    for(let b=0; b<8; b++) {
+        wirePair(document.getElementById(`g-ek-${b}`), document.getElementById(`g-ef-${b}`), EQ_GAIN_MIN, EQ_GAIN_MAX,
+            ()=>globalState.eq[b], v=>{globalState.eq[b]=v; updateGlobalUI(); applyLiveGlobalEQ();});
+    }
+
+    // Wire Voices
+    for(let i=1; i<=MAX_VOICES; i++) {
+        wireHaptic(`v${i}-hf-note`, `v${i}-hf-note-cap`, -12, 12, ()=>padState[i].note, v=>padState[i].note=v, ()=>updateVoiceUI(i));
+        wireHaptic(`v${i}-hf-oct`, `v${i}-hf-oct-cap`, -3, 3, ()=>padState[i].oct, v=>padState[i].oct=v, ()=>updateVoiceUI(i));
+
+        wirePair(document.getElementById(`v${i}-k-volume`), document.getElementById(`v${i}-f-volume`), 0, 1, 
+            ()=>padState[i].volume, v=>padState[i].volume=v, ()=>updateVoiceUI(i));
+        wirePair(document.getElementById(`v${i}-k-tone`), document.getElementById(`v${i}-f-tone`), 0, 1, 
+            ()=>padState[i].tone, v=>padState[i].tone=v, ()=>updateVoiceUI(i));
+        wirePair(document.getElementById(`v${i}-k-reverbSend`), document.getElementById(`v${i}-f-reverbSend`), 0, 1, 
+            ()=>padState[i].reverbSend, v=>padState[i].reverbSend=v, ()=>updateVoiceUI(i));
+
+        for(let b=0; b<8; b++) {
+            wirePair(document.getElementById(`v${i}-ek-${b}`), document.getElementById(`v${i}-ef-${b}`), EQ_GAIN_MIN, EQ_GAIN_MAX,
+                ()=>padState[i].eq[b], v=>{padState[i].eq[b]=v; updateVoiceUI(i); applyLiveVoiceEQ(i);});
+        }
+    }
+}
+
+function hapticTick(){
+    try{
+        if(!hapticCtx) hapticCtx=new (window.AudioContext||window.webkitAudioContext)();
+        if(hapticCtx.state === 'suspended') hapticCtx.resume();
+        const o=hapticCtx.createOscillator(), g=hapticCtx.createGain();
+        o.frequency.value=1200; g.gain.value=0.03;
+        o.connect(g); g.connect(hapticCtx.destination);
+        o.start(); o.stop(hapticCtx.currentTime+0.02);
+    }catch(e){}
+}
+
+// ====================================================
+// PRESET CHORD LOGIC
+// ====================================================
+function changeChord() {
+    const type = document.getElementById('chordSelect').value;
+    if(type === 'custom') return; 
+
+    const intervals = CHORD_DICT[type];
+    for(let i=1; i<=MAX_VOICES; i++) {
+        if (i <= intervals.length) {
+            padState[i].enabled = true;
+            let semi = intervals[i-1];
+            padState[i].oct = Math.floor(semi / 12);
+            padState[i].note = semi % 12;
+        } else {
+            padState[i].enabled = false;
+        }
+    }
+
+    for(let i=1; i<=MAX_VOICES; i++) {
+        document.getElementById(`vcard-${i}`).classList.toggle('disabled', !padState[i].enabled);
+        document.getElementById(`v${i}-en`).checked = padState[i].enabled;
+        const nNorm = (padState[i].note + 12) / 24;
+        const oNorm = (padState[i].oct + 3) / 6;
+        document.getElementById(`v${i}-hf-note-cap`).style.left = (nNorm*100)+'%';
+        document.getElementById(`v${i}-hf-oct-cap`).style.left = (oNorm*100)+'%';
+        updateVoiceUI(i);
+    }
+
+    if (isContinuousPlaying) playContinuous();
+}
+
+function checkCustomMode() {
+    document.getElementById('chordSelect').value = 'custom';
+    if (isContinuousPlaying) playContinuous();
+}
+
+// ====================================================
+// TRANSPORT / CONTINUOUS PLAY
+// ====================================================
+function getRootFreq() {
+    const root = document.getElementById('rootSelect').value;
+    return FREQS[root + '4'] || 261.63; 
+}
+
+function playContinuous() {
+    isContinuousPlaying = true;
+    document.getElementById('playPadBtn').classList.add('playing');
+    playNote(getRootFreq(), 'continuous-pad');
+}
+
+function stopContinuousPlay() {
+    isContinuousPlaying = false;
+    document.getElementById('playPadBtn').classList.remove('playing');
+    stopNote('continuous-pad');
+}
+
+function toggleContinuousPlay() {
+    if (isContinuousPlaying) stopContinuousPlay(); else playContinuous();
+}
+
+// ====================================================
+// AUDIO ENGINE & ROUTING
+// ====================================================
+
+async function initAudio(){
+    if (audioCtx) return;
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});
+
+    // 1. Dry Master Bus
+    masterBus = audioCtx.createGain(); masterBus.gain.value = 1.0;
+    
+    // 2. Global Reverb
+    convolver = audioCtx.createConvolver();
+    const len = audioCtx.sampleRate * 3.5, ibuf = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
+    for(let ch=0;ch<2;ch++){ const d=ibuf.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.0); }
+    convolver.buffer = ibuf;
+    globalReverbGain = audioCtx.createGain(); globalReverbGain.gain.value = globalState.reverbLvl;
+    convolver.connect(globalReverbGain);
+
+    // 3. Pre-Master Bus (Combines Dry + Reverb before Delay & Vol)
+    preMasterBus = audioCtx.createGain(); preMasterBus.gain.value = 1.0;
+    masterBus.connect(preMasterBus);
+    globalReverbGain.connect(preMasterBus);
+
+    // 4. Global Delay
+    globalDelayNode = audioCtx.createDelay(2.0); globalDelayNode.delayTime.value = globalState.delayTime;
+    delayFeedbackGain = audioCtx.createGain(); delayFeedbackGain.gain.value = globalState.delayFeedback;
+    delayWetGain = audioCtx.createGain(); delayWetGain.gain.value = globalState.delayMix;
+
+    preMasterBus.connect(globalDelayNode);
+    globalDelayNode.connect(delayFeedbackGain);
+    delayFeedbackGain.connect(globalDelayNode);
+    globalDelayNode.connect(delayWetGain);
+
+    // 5. Master Volume Ceiling
+    masterVolGain = audioCtx.createGain(); masterVolGain.gain.value = globalState.masterVol;
+    preMasterBus.connect(masterVolGain);
+    delayWetGain.connect(masterVolGain);
+
+    // 6. Tremolo Modulator
+    globalTremolo = audioCtx.createGain(); globalTremolo.gain.value = 1.0;
+    globalOscLFO = audioCtx.createOscillator(); globalOscLFO.type = 'sine';
+    globalOscGain = audioCtx.createGain();
+    globalOscLFO.connect(globalOscGain);
+    globalOscGain.connect(globalTremolo.gain);
+    globalOscLFO.start();
+
+    masterVolGain.connect(globalTremolo);
+
+    // 7. Vibrato Modulator Setup
+    globalVibLFO = audioCtx.createOscillator(); globalVibLFO.type = 'sine';
+    globalVibGain = audioCtx.createGain();
+    globalVibLFO.connect(globalVibGain);
+    globalVibLFO.start();
+
+    // 8. Master EQ Chain
+    let lastNode = globalTremolo;
+    globalEqNodes = EQ_BANDS.map(b => {
+        const eq = audioCtx.createBiquadFilter();
+        eq.type = b.type; eq.frequency.value = b.freq; eq.Q.value = b.Q;
+        lastNode.connect(eq);
+        lastNode = eq;
+        return eq;
+    });
+
+    lastNode.connect(audioCtx.destination);
+    
+    applyLiveGlobals();
+    applyLiveGlobalEQ();
+}
+
+function buildPadVoice(baseFreq, voiceState) {
+    const now = audioCtx.currentTime;
+    const freq = baseFreq * Math.pow(2, voiceState.oct + (voiceState.note/12));
+    let oscillators = [];
+    let mix = audioCtx.createGain(); mix.gain.value = 0.33;
+
+    if (voiceState.type === 'sine_pad') {
+        const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = freq;
+        const o2 = audioCtx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = freq * 1.004;
+        const o3 = audioCtx.createOscillator(); o3.type = 'triangle'; o3.frequency.value = freq * 0.996;
+        const o4 = audioCtx.createOscillator(); o4.type = 'sawtooth'; o4.frequency.value = freq / 2;
+        const sawGain = audioCtx.createGain(); sawGain.gain.value = 0.3;
+        o1.connect(mix); o2.connect(mix); o3.connect(mix); o4.connect(sawGain); sawGain.connect(mix);
+        oscillators = [o1, o2, o3, o4];
+    } else if (voiceState.type === 'soft_brass') {
+        const o1 = audioCtx.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = freq;
+        const o2 = audioCtx.createOscillator(); o2.type = 'sawtooth'; o2.frequency.value = freq * 1.006;
+        const o3 = audioCtx.createOscillator(); o3.type = 'square'; o3.frequency.value = freq * 0.994;
+        o1.connect(mix); o2.connect(mix); o3.connect(mix);
+        oscillators = [o1, o2, o3];
+    } else if (voiceState.type === 'glassy_synth') {
+        const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = freq;
+        const o2 = audioCtx.createOscillator(); o2.type = 'sine'; o2.frequency.value = freq * 2.0;
+        const o3 = audioCtx.createOscillator(); o3.type = 'sine'; o3.frequency.value = freq * 4.01;
+        const o4 = audioCtx.createOscillator(); o4.type = 'triangle'; o4.frequency.value = freq;
+        const highGain = audioCtx.createGain(); highGain.gain.value = 0.2;
+        o1.connect(mix); o4.connect(mix); o2.connect(highGain); o3.connect(highGain); highGain.connect(mix);
+        oscillators = [o1, o2, o3, o4];
+    } else if (voiceState.type === 'deep_bass') {
+        const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = freq / 2;
+        const o2 = audioCtx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = freq / 2;
+        const o3 = audioCtx.createOscillator(); o3.type = 'square'; o3.frequency.value = freq / 2;
+        const sqGain = audioCtx.createGain(); sqGain.gain.value = 0.15;
+        o1.connect(mix); o2.connect(mix); o3.connect(sqGain); sqGain.connect(mix);
+        oscillators = [o1, o2, o3];
+    }
+
+    oscillators.forEach(o => globalVibGain.connect(o.detune));
+
+    const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.Q.value = 0.5;
+    let baseCutoff = 200 + (voiceState.tone * 4000);
+    if (voiceState.type === 'soft_brass') {
+        filter.frequency.setValueAtTime(baseCutoff + 3000, now);
+        filter.frequency.exponentialRampToValueAtTime(baseCutoff, now + globalState.decay);
+    } else if (voiceState.type === 'deep_bass') {
+        filter.frequency.setValueAtTime(100 + (voiceState.tone * 1200), now);
+    } else {
+        filter.frequency.setValueAtTime(baseCutoff, now);
+    }
+    mix.connect(filter);
+
+    let eqChain = [];
+    let lastNode = filter;
+    EQ_BANDS.forEach((bDef, i) => {
+        const eq = audioCtx.createBiquadFilter();
+        eq.type = bDef.type; eq.frequency.value = bDef.freq; eq.Q.value = bDef.Q; eq.gain.value = voiceState.eq[i];
+        lastNode.connect(eq); lastNode = eq; eqChain.push(eq);
+    });
+
+    const env = audioCtx.createGain(); env.gain.setValueAtTime(0, now);
+    const peak = voiceState.volume * 0.7; const atk = Math.max(0.01, globalState.attack);
+    env.gain.linearRampToValueAtTime(peak, now + atk); 
+    const sustainLevel = Math.max(peak * globalState.sustain, 0.001);
+    env.gain.setTargetAtTime(sustainLevel, now + atk, globalState.decay / 3); 
+    lastNode.connect(env);
+
+    const dryOut = audioCtx.createGain(); dryOut.gain.value = 1.0 - (voiceState.reverbSend * 0.5);
+    const wetOut = audioCtx.createGain(); wetOut.gain.value = voiceState.reverbSend;
+    
+    env.connect(dryOut); dryOut.connect(masterBus);
+    env.connect(wetOut); wetOut.connect(convolver); // Sends to the master convolver
+
+    oscillators.forEach(o => o.start(now));
+    return { oscillators: oscillators, envelope: env, eqNodes: eqChain };
+}
+
+function playNote(freq, noteId) {
+    if(!audioCtx) initAudio();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    
+    if(activeNotes.has(noteId)) stopNote(noteId, true);
+    
+    let activeVoices = [];
+    for(let i=1; i<=MAX_VOICES; i++) {
+        if(padState[i].enabled) {
+            const vNodes = buildPadVoice(freq, padState[i]);
+            vNodes.slotId = i; 
+            activeVoices.push(vNodes);
+        }
+    }
+    activeNotes.set(noteId, activeVoices);
+}
+
+function stopNote(noteId, immediate=false) {
+    if(!activeNotes.has(noteId)) return;
+    const voices = activeNotes.get(noteId);
+    activeNotes.delete(noteId);
+
+    const now = audioCtx.currentTime;
+    const rel = immediate ? 0.05 : globalState.release; 
+    const endT = now + rel;
+
+    voices.forEach(v => {
+        try {
+            const cur = Math.max(v.envelope.gain.value, 0.001);
+            v.envelope.gain.cancelScheduledValues(now);
+            v.envelope.gain.setValueAtTime(cur, now);
+            v.envelope.gain.exponentialRampToValueAtTime(0.0001, endT);
+            v.oscillators.forEach(o => o.stop(endT + 0.1));
+            setTimeout(()=>{ try{ v.envelope.disconnect(); }catch(e){} }, (rel+0.5)*1000);
+        } catch(e){}
+    });
+}
+
+function applyLiveVoiceEQ(slotId) {
+    if(!audioCtx) return;
+    const s = padState[slotId];
+    for (let [noteId, voices] of activeNotes.entries()) {
+        voices.forEach(v => {
+            if(v.slotId === slotId) v.eqNodes.forEach((eqNode, bIndex) => eqNode.gain.setTargetAtTime(s.eq[bIndex], audioCtx.currentTime, 0.05));
+        });
+    }
+}
+
+function applyLiveGlobals() {
+    if(!audioCtx) return;
+    const now = audioCtx.currentTime;
+    globalVibLFO.frequency.setTargetAtTime(globalState.vibRate, now, 0.05);
+    globalVibGain.gain.setTargetAtTime(globalState.vibDepth, now, 0.05);
+
+    globalOscLFO.frequency.setTargetAtTime(globalState.oscRate, now, 0.05);
+    globalOscGain.gain.setTargetAtTime(globalState.oscDepth, now, 0.05);
+
+    if(globalReverbGain) globalReverbGain.gain.setTargetAtTime(globalState.reverbLvl, now, 0.05);
+    if(globalDelayNode) globalDelayNode.delayTime.setTargetAtTime(globalState.delayTime, now, 0.05);
+    if(delayFeedbackGain) delayFeedbackGain.gain.setTargetAtTime(globalState.delayFeedback, now, 0.05);
+    if(delayWetGain) delayWetGain.gain.setTargetAtTime(globalState.delayMix, now, 0.05);
+    if(masterVolGain) masterVolGain.gain.setTargetAtTime(globalState.masterVol, now, 0.05);
+}
+
+function applyLiveGlobalEQ() {
+    if(!audioCtx) return;
+    globalEqNodes.forEach((eqNode, bIndex) => eqNode.gain.setTargetAtTime(globalState.eq[bIndex], audioCtx.currentTime, 0.05));
+}
+
+function buildMainKeyboard(){
+    const kb=document.getElementById('kbd-main'); if(kb.children.length>0)return;
+    for(let o=0;o<=7;o++) CHROMATIC.forEach((n,i)=>{
+        if(o===0&&i<9)return; if(o===7&&i>9)return;
+        const freq=440*Math.pow(2,((o-4)*12+(i-9))/12);
+        const div=document.createElement('div'); div.className=`key ${n.includes('#')?'black-key':'white-key'}`;
+        const id='main-'+n+o;
+        div.addEventListener('mousedown',e=>{e.preventDefault();playNote(freq,id);div.classList.add('active');});
+        div.addEventListener('mouseup',()=>{stopNote(id);div.classList.remove('active');});
+        div.addEventListener('mouseleave',()=>{stopNote(id);div.classList.remove('active');});
+        div.addEventListener('touchstart',e=>{e.preventDefault();playNote(freq,id);div.classList.add('active');},{passive:false});
+        div.addEventListener('touchend',()=>{stopNote(id);div.classList.remove('active');},{passive:false});
+        kb.appendChild(div);
+    });
+    const c4=document.querySelectorAll('#kbd-main .white-key')[39]; if(c4)c4.scrollIntoView({inline:'center'});
+}
+
+document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.repeat)return;
+    const n=KEY_MAP[e.key.toLowerCase()];
+    if(n)playNote(FREQS[n],'main-'+n);
+});
+document.addEventListener('keyup',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+    const n=KEY_MAP[e.key.toLowerCase()];
+    if(n)stopNote('main-'+n);
+});
+
+window.onload=()=>{
+    initUI();
+    buildMainKeyboard();
+    updateGlobalUI();
+    for(let i=1; i<=MAX_VOICES; i++) {
+        const nNorm = (padState[i].note + 12) / 24;
+        const oNorm = (padState[i].oct + 3) / 6;
+        document.getElementById(`v${i}-hf-note-cap`).style.left = (nNorm*100)+'%';
+        document.getElementById(`v${i}-hf-oct-cap`).style.left = (oNorm*100)+'%';
+        updateVoiceUI(i);
+    }
+    wireControls();
+};
+</script>
+</body>
+</html>
