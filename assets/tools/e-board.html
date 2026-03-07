@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual E-Board Studio</title>
+    <title>E-board</title>
     <style>
         :root {
             --bg: #e0e5ec;
@@ -17,6 +17,7 @@
         body { background-color: var(--bg); font-family: 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; color: #333; }
         header { text-align: center; margin-bottom: 25px; }
         h1 { font-size: 2.8rem; color: #2c3e50; font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
+        .header-hint { font-size: 14px; color: #7f8c8d; font-weight: 600; margin-top: -5px; }
 
         .main-box { background-color: var(--bg); padding: 30px; border-radius: 20px; box-shadow: 15px 15px 30px rgba(163,177,198,0.5), -15px -15px 30px rgba(255,255,255,0.8); max-width: 1000px; width: 100%; }
 
@@ -95,13 +96,16 @@
         .hfader-wrap{width:100%;max-width:420px;margin:6px auto 2px auto;display:flex;flex-direction:column;align-items:center}
         .hfader-label{font-size:10px;font-weight:800;color:var(--accent);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
         .hfader-track{position:relative;width:100%;height:14px;border-radius:10px;background:var(--bg); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);cursor:ew-resize;touch-action:none}
-        .hfader-cap{position:absolute;top:50%;transform:translate(-50%,-50%);width:42px;height:22px;border-radius:6px; background:linear-gradient(145deg,#f0f0f0,#bcc6d5);box-shadow:0 4px 8px rgba(0,0,0,0.3); transition: left 0.1s ease-out;} /* Added smooth snapping transition */
+        .hfader-cap{position:absolute;top:50%;transform:translate(-50%,-50%);width:42px;height:22px;border-radius:6px; background:linear-gradient(145deg,#f0f0f0,#bcc6d5);box-shadow:0 4px 8px rgba(0,0,0,0.3); transition: left 0.1s ease-out;}
         .hfader-cap:after{content:'';position:absolute;left:10%;right:10%;top:50%;height:2px;background:var(--pointer)}
         .hfader-val{font-family:monospace;font-size:11px;margin-top:4px;color:#777;font-weight:bold}
     </style>
 </head>
 <body>
-<header><h1>Virtual E-Board</h1></header>
+<header>
+    <h1>E-board</h1>
+    <div class="header-hint">(Virtual Electronic Keyboard)</div>
+</header>
 
 <div class="main-box">
     <div id="panel-keyboard">
@@ -231,8 +235,8 @@ async function loadPianoSamples(){
             if (!r.ok) throw new Error(n);
             pianoBuffers[m]=await audioCtx.decodeAudioData(await r.arrayBuffer());
         }));
-        pianoReady=true; console.log('[Virtual E-Board] Piano samples loaded \u2713');
-    } catch(e){ console.warn('[Virtual E-Board] Synth fallback active.',e.message); }
+        pianoReady=true; console.log('[E-board] Piano samples loaded \u2713');
+    } catch(e){ console.warn('[E-board] Synth fallback active.',e.message); }
     pianoLoading=false;
 }
 
@@ -459,7 +463,7 @@ function initEQ(){
     eqFilters[eqFilters.length-1].connect(dryGain); dryGain.connect(audioCtx.destination);
     try{masterGain.disconnect(reverbNode);}catch(e){}
     eqFilters[eqFilters.length-1].connect(reverbNode);
-    console.log('[Virtual E-Board] EQ wired \u2713');
+    console.log('[E-board] EQ wired \u2713');
 }
 
 function applyEQ(){ if(!eqFilters.length)return; eqGains.forEach((db,i)=>eqFilters[i].gain.value=db); }
