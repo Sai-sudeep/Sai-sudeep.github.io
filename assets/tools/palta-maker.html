@@ -282,11 +282,11 @@
                 <select id="presetSelect" onchange="loadPreset()"></select>
             </div>
             <div class="input-group">
-                <label><span>Aaroh Scale:</span><span class="hint">(आरोह सप्तक)</span></label>
+                <label><span>Ascending Scale:</span><span class="hint">(आरोह सप्तक)</span></label>
                 <input type="text" id="aarohInput" value="S R G M P D N">
             </div>
             <div class="input-group">
-                <label><span>Avroh Scale:</span><span class="hint">(अवरोह सप्तक)</span></label>
+                <label><span>Descending Scale:</span><span class="hint">(अवरोह सप्तक)</span></label>
                 <input type="text" id="avrohInput" value="S R G M P D N">
             </div>
             <div class="input-group">
@@ -506,7 +506,7 @@
         let formattedOutput = '';
         
         // Add Aaroh section header
-        formattedOutput += '<span class="section-header">Aaroh (Ascending)<span class="hint">(आरोह)</span></span><br>';
+        formattedOutput += '<span class="section-header">Ascending<span class="hint">(आरोह)</span></span><br>';
         
         // Format Aaroh swaras as buttons
         const aarohLines = aarohStr.split(' ,\n');
@@ -526,7 +526,7 @@
         formattedOutput += '<br><br>';
         
         // Add Avroh section header
-        formattedOutput += '<span class="section-header">Avroh (Descending)<span class="hint">(अवरोह)</span></span><br>';
+        formattedOutput += '<span class="section-header">Descending<span class="hint">(अवरोह)</span></span><br>';
         
         // Format Avroh swaras as buttons
         const avrohLines = avrohStr.split(' ,\n');
@@ -655,3 +655,4 @@
 </script>
 </body>
 </html>
+
