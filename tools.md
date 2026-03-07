@@ -14,7 +14,6 @@ permalink: /tools/
 
     <div class="tools-grid">
 
-      <!-- Palta Maker Card -->
       <div class="tool-card">
         <div class="tool-icon">🎵</div>
         <div class="tool-info">
@@ -27,7 +26,6 @@ permalink: /tools/
         </div>
       </div>
 
-      <!-- WORDLE Regex Solver Card -->
       <div class="tool-card">
         <div class="tool-icon">🎮</div>
         <div class="tool-info">
@@ -40,11 +38,20 @@ permalink: /tools/
         </div>
       </div>
 
-      <!-- Add more tool cards here in future -->
+      <div class="tool-card">
+        <div class="tool-icon">📄</div>
+        <div class="tool-info">
+          <h3>PDF Page Surgeon</h3>
+          <p>Reorder, delete pages, and apply N-up layouts (multiple pages per sheet) completely locally in your browser. No files are uploaded.</p>
+        </div>
+        <div class="tool-actions">
+          <button class="tool-btn tool-btn-preview" onclick="openTool('pdf-surgeon')">👁️ Preview Here</button>
+          <a class="tool-btn tool-btn-newpage" href="/assets/tools/pdf-surgeon.html" target="_blank">↗ Open in New Page</a>
+        </div>
+      </div>
 
     </div>
 
-    <!-- Tool Embed Area -->
     <div class="tool-embed" id="tool-embed" style="display:none;">
       <div class="tool-embed-header">
         <span id="tool-embed-title"></span>
@@ -214,6 +221,10 @@ var tools = {
   'wordle-regex-solver': {
     title: '🎮 WORDLE Regex Solver',
     src: '/assets/tools/wordle-regex-solver.html'
+  },
+  'pdf-surgeon': {
+    title: '📄 PDF Page Surgeon',
+    src: '/assets/tools/pdf-surgeon.html'
   }
 };
 
