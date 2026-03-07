@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-board | Pro Console V3.7</title>
+    <style>
+        :root {
+            --bg: #e0e5ec;
+            --shadow-dark: #a3b1c6;
+            --shadow-light: #ffffff;
+            --accent: #082567;
+            --pointer: #3498db;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 2.8rem; color: var(--accent); font-weight: 800; letter-spacing: -1px; }
+        .subtitle { font-size: 0.7rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+
+        .main-box {
+            background-color: var(--bg);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* --- ENHANCED 3D TOGGLE --- */
+        .ui-toggle-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .toggle-label { font-size: 0.75rem; font-weight: 700; color: #777; text-transform: uppercase; }
+        
+        .switch { 
+            position: relative; 
+            display: inline-block; 
+            width: 70px; 
+            height: 36px; 
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        
+        /* The molded track */
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg); transition: .4s; border-radius: 34px;
+            box-shadow: 
+                inset 6px 6px 10px var(--shadow-dark), 
+                inset -6px -6px 10px var(--shadow-light);
+        }
+        
+        /* The 3D Raised Slider Button */
+        .slider:before {
+            position: absolute; content: ""; height: 26px; width: 26px; left: 5px; bottom: 5px;
+            background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            transition: .4s; border-radius: 50%;
+            box-shadow: 
+                3px 3px 6px var(--shadow-dark), 
+                -1px -1px 2px var(--shadow-light);
+        }
+        
+        input:checked + .slider:before { 
+            transform: translateX(34px); 
+            background: var(--accent);
+            box-shadow: 
+                0 0 10px rgba(8, 37, 103, 0.4),
+                inset 1px 1px 2px rgba(255,255,255,0.3);
+        }
+
+        /* --- KEYBOARD UI --- */
+        .keyboard-wrapper {
+            background: #080808;
+            padding: 20px 10px 10px 10px;
+            border-radius: 12px;
+            box-shadow: inset 0 10px 25px #000, 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 35px;
+            overflow-x: auto;
+        }
+        .keyboard { position: relative; height: 240px; display: inline-flex; white-space: nowrap; padding-top: 5px; }
+        .key { position: relative; user-select: none; transition: all 0.08s ease; cursor: pointer; }
+        
+        .white-key {
+            width: 50px; height: 100%;
+            background: linear-gradient(to bottom, #eee 0%, #fff 8%, #fff 92%, #e0e0e0 100%);
+            border: 1px solid #d1d1d1; border-radius: 0 0 5px 5px; z-index: 1;
+            display: flex; justify-content: center; align-items: flex-end;
+            padding-bottom: 10px; font-size: 10px; color: #ccc; font-weight: bold;
+            box-shadow: -1px 0 0 rgba(255,255,255,0.8) inset, 0 4px 6px rgba(0,0,0,0.15);
+        }
+        .white-key.active { height: 98%; transform: translateY(3px); background: #f0f0f0; box-shadow: inset 0 10px 20px rgba(0,0,0,0.1); }
+        
+        .black-key {
+            width: 30px; height: 60%;
+            background: linear-gradient(135deg, #444 0%, #222 10%, #000 30%, #000 100%);
+            border-radius: 0 0 4px 4px; z-index: 2; margin: 0 -15px;
+            box-shadow: -2px 2px 0 #1a1a1a, -4px 4px 10px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.15);
+        }
+        .black-key.active { height: 59%; transform: translateY(2px); background: #000; }
+
+        .interface-container { min-height: 200px; position: relative; }
+        .ui-panel { display: none; justify-content: space-around; align-items: flex-end; width: 100%; }
+        .ui-panel.active { display: flex; }
+
+        .knob-group, .fader-group { display: flex; flex-direction: column; align-items: center; width: 140px; position: relative; }
+        .label { margin-bottom: 5px; font-weight: 700; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; }
+        .value-display { font-family: monospace; font-size: 0.75rem; color: #888; margin-bottom: 10px; font-weight: bold; }
+        
+        .knob-outer {
+            width: 70px; height: 70px; border-radius: 50%; background: var(--bg);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            display: flex; justify-content: center; align-items: center; cursor: ns-resize;
+        }
+        .knob-inner {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(145deg, #f8f9fb, #d1d9e6);
+            box-shadow: 2px 2px 5px var(--shadow-dark), -1px -1px 2px var(--shadow-light);
+            position: relative;
+        }
+        .knob-dot {
+            width: 4px; height: 14px; background: var(--pointer); border-radius: 2px;
+            position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+            transform-origin: 50% 20px;
+        }
+
+        .fader-track {
+            width: 12px; height: 140px; background: var(--bg); border-radius: 10px;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            position: relative; cursor: ns-resize;
+        }
+        .fader-cap {
+            width: 34px; height: 45px; background: linear-gradient(to bottom, #f0f0f0, #bcc6d5);
+            border-radius: 4px; position: absolute; left: 50%; transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-top: 1px solid #fff;
+        }
+        .fader-cap::after {
+            content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--pointer);
+        }
+
+        .copyright { text-align: center; font-size: 12px; color: #7f8c8d; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>E-board</h1>
+    <p class="subtitle">(Virtual Electronic Keyboard)</p>
+</header>
+
+<div class="main-box">
+    <div class="ui-toggle-wrapper">
+        <span class="toggle-label">Knobs</span>
+        <label class="switch">
+            <input type="checkbox" id="ui-mode-toggle" onchange="switchUI()">
+            <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Faders</span>
+    </div>
+
+    <div class="keyboard-wrapper">
+        <div class="keyboard" id="keyboard"></div>
+    </div>
+    
+    <div class="interface-container">
+        <div id="panel-knobs" class="ui-panel active">
+            <div class="knob-group">
+                <span class="label">Volume</span><span class="value-display" id="val-k-volume">0%</span>
+                <div class="knob-outer" id="k-volume"><div class="knob-inner"><div class="knob-dot" id="dot-volume"></div></div></div>
+            </div>
+            <div class="knob-group">
+                <span class="label">Tone</span><span class="value-display" id="val-k-tone">0%</span>
+                <div class="knob-outer" id="k-tone"><div class="knob-inner"><div class="knob-dot" id="dot-tone"></div></div></div>
+            </div>
+            <div class="knob-group">
+                <span class="label">Sustain</span><span class="value-display" id="val-k-sustain">0%</span>
+                <div class="knob-outer" id="k-sustain"><div class="knob-inner"><div class="knob-dot" id="dot-sustain"></div></div></div>
+            </div>
+            <div class="knob-group">
+                <span class="label">Reverb</span><span class="value-display" id="val-k-reverb">0%</span>
+                <div class="knob-outer" id="k-reverb"><div class="knob-inner"><div class="knob-dot" id="dot-reverb"></div></div></div>
+            </div>
+        </div>
+
+        <div id="panel-faders" class="ui-panel">
+            <div class="fader-group">
+                <span class="label">Volume</span><span class="value-display" id="val-f-volume">0%</span>
+                <div class="fader-track" id="f-volume"><div class="fader-cap" id="cap-volume"></div></div>
+            </div>
+            <div class="fader-group">
+                <span class="label">Tone</span><span class="value-display" id="val-f-tone">0%</span>
+                <div class="fader-track" id="f-tone"><div class="fader-cap" id="cap-tone"></div></div>
+            </div>
+            <div class="fader-group">
+                <span class="label">Sustain</span><span class="value-display" id="val-f-sustain">0%</span>
+                <div class="fader-track" id="f-sustain"><div class="fader-cap" id="cap-sustain"></div></div>
+            </div>
+            <div class="fader-group">
+                <span class="label">Reverb</span><span class="value-display" id="val-f-reverb">0%</span>
+                <div class="fader-track" id="f-reverb"><div class="fader-cap" id="cap-reverb"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyright">&copy; Sai Sudeep Das (2026)</div>
+</div>
+
+<script>
+    const NOTES_DATA = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const FREQS = {};
+    for (let oct = 0; oct <= 7; oct++) {
+        NOTES_DATA.forEach((n, i) => {
+            if (oct === 0 && i < 9) return;
+            if (oct === 7 && i > 9) return;
+            const name = n + oct;
+            const semi = (oct - 4) * 12 + (i - 9);
+            FREQS[name] = 440 * Math.pow(2, semi / 12);
+        });
+    }
+
+    const KEY_MAP = { 'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4', 'f': 'F4', 't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4', 'u': 'A#4', 'j': 'B4', 'k': 'C5' };
+
+    let audioCtx, masterGain, reverbNode, convolver;
+    let activeVoices = new Map();
+    let settings = { volume: 0.6, tone: 0.5, sustain: 1.2, reverb: 0.25 };
+
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = settings.volume;
+        masterGain.connect(audioCtx.destination);
+        reverbNode = audioCtx.createGain();
+        reverbNode.gain.value = settings.reverb;
+        convolver = audioCtx.createConvolver();
+        const len = audioCtx.sampleRate * 2.2;
+        const buffer = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
+        for (let c = 0; c < 2; c++) {
+            const data = buffer.getChannelData(c);
+            for (let i = 0; i < len; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+            }
+        }
+        convolver.buffer = buffer;
+        reverbNode.connect(convolver);
+        convolver.connect(audioCtx.destination);
+    }
+
+    function playHapticTick(type = 'detent') {
+        if(!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(type === 'detent' ? 2000 : 150, audioCtx.currentTime);
+        g.gain.setValueAtTime(type === 'detent' ? 0.05 : 0.15, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.03);
+    }
+
+    function playNote(note) {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const freq = FREQS[note];
+        if (!freq) return;
+
+        if (activeVoices.has(note)) {
+            const oldVoice = activeVoices.get(note);
+            const killTime = audioCtx.currentTime + 0.001;
+            oldVoice.gain.gain.cancelScheduledValues(audioCtx.currentTime);
+            oldVoice.gain.gain.exponentialRampToValueAtTime(0.001, killTime);
+            oldVoice.nodes.forEach(n => { try { n.stop(killTime); } catch(e) {} });
+            activeVoices.delete(note);
+        }
+
+        playHapticTick('key');
+        const now = audioCtx.currentTime;
+        const voiceGain = audioCtx.createGain();
+        
+        const hammer = audioCtx.createOscillator();
+        const hGain = audioCtx.createGain();
+        const hFilter = audioCtx.createBiquadFilter();
+        hammer.type = 'sawtooth'; hammer.frequency.value = freq;
+        hFilter.type = 'highpass'; hFilter.frequency.value = 1600;
+        hGain.gain.setValueAtTime(0.12, now);
+        hGain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+        hammer.connect(hFilter); hFilter.connect(hGain); hGain.connect(voiceGain);
+
+        const partials = [ { type: 'sine', f: 1.0, g: 0.7 }, { type: 'triangle', f: 2.0, g: 0.1 }, { type: 'sine', f: 3.0, g: 0.04 } ].map(p => {
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = p.type; o.frequency.value = freq * p.f + (Math.random() * 0.1);
+            g.gain.value = p.g; o.connect(g); g.connect(voiceGain);
+            return o;
+        });
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(200 + (settings.tone * 11000), now);
+        filter.frequency.exponentialRampToValueAtTime(150, now + 5);
+
+        voiceGain.connect(filter); filter.connect(masterGain); filter.connect(reverbNode);
+        voiceGain.gain.setValueAtTime(0, now);
+        voiceGain.gain.linearRampToValueAtTime(1, now + 0.005);
+        voiceGain.gain.exponentialRampToValueAtTime(0.1, now + 7);
+
+        hammer.start(); partials.forEach(o => o.start());
+        activeVoices.set(note, { nodes: [hammer, ...partials], gain: voiceGain });
+    }
+
+    function stopNote(note) {
+        if (!activeVoices.has(note)) return;
+        const voice = activeVoices.get(note);
+        const now = audioCtx.currentTime;
+        const rel = Math.max(0.05, settings.sustain);
+        const endT = now + rel;
+        
+        voice.gain.gain.cancelScheduledValues(now);
+        voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
+        voice.gain.gain.exponentialRampToValueAtTime(0.001, endT);
+        
+        voice.nodes.forEach(n => { try { n.stop(endT + 0.1); } catch(e) {} });
+        activeVoices.delete(note);
+    }
+
+    function buildKeys() {
+        const kb = document.getElementById('keyboard');
+        Object.keys(FREQS).forEach(n => {
+            const isB = n.includes('#');
+            const div = document.createElement('div');
+            div.className = `key ${isB ? 'black-key' : 'white-key'}`;
+            div.dataset.note = n;
+            div.textContent = isB ? '' : n;
+            const start = (e) => { e.preventDefault(); playNote(n); div.classList.add('active'); };
+            const end = () => { stopNote(n); div.classList.remove('active'); };
+            div.addEventListener('mousedown', start); div.addEventListener('mouseup', end); div.addEventListener('mouseleave', end);
+            div.addEventListener('touchstart', start, {passive: false}); div.addEventListener('touchend', end, {passive: false});
+            kb.appendChild(div);
+        });
+        const c4 = document.querySelector('[data-note="C4"]');
+        if (c4) c4.scrollIntoView({ behavior: 'auto', inline: 'center' });
+    }
+
+    function switchUI() {
+        const isFader = document.getElementById('ui-mode-toggle').checked;
+        document.getElementById('panel-knobs').classList.toggle('active', !isFader);
+        document.getElementById('panel-faders').classList.toggle('active', isFader);
+        updateAllUI();
+    }
+
+    function updateAllUI() {
+        const cfg = [
+            { k: 'dot-volume', f: 'cap-volume', vk: 'val-k-volume', vf: 'val-f-volume', val: settings.volume, min: 0, max: 1 },
+            { k: 'dot-tone', f: 'cap-tone', vk: 'val-k-tone', vf: 'val-f-tone', val: settings.tone, min: 0, max: 1 },
+            { k: 'dot-sustain', f: 'cap-sustain', vk: 'val-k-sustain', vf: 'val-f-sustain', val: settings.sustain, min: 0.1, max: 4 },
+            { k: 'dot-reverb', f: 'cap-reverb', vk: 'val-k-reverb', vf: 'val-f-reverb', val: settings.reverb, min: 0, max: 0.8 }
+        ];
+        cfg.forEach(c => {
+            const pctVal = Math.round(((c.val - c.min) / (c.max - c.min)) * 100);
+            document.getElementById(c.vk).innerText = pctVal + '%';
+            document.getElementById(c.vf).innerText = pctVal + '%';
+            const angle = ((c.val - c.min) / (c.max - c.min)) * 270 - 135;
+            document.getElementById(c.k).style.transform = `translateX(-50%) rotate(${angle}deg)`;
+            const pos = 140 - (((c.val - c.min) / (c.max - c.min)) * 140);
+            document.getElementById(c.f).style.top = `${Math.max(0, Math.min(100, pos - 22))}px`;
+        });
+    }
+
+    function setupControls() {
+        const items = [
+            { id: 'volume', key: 'volume', min: 0, max: 1, act: v => { if(masterGain) masterGain.gain.value = v; } },
+            { id: 'tone', key: 'tone', min: 0, max: 1, act: v => {} },
+            { id: 'sustain', key: 'sustain', min: 0.1, max: 4, act: v => {} },
+            { id: 'reverb', key: 'reverb', min: 0, max: 0.8, act: v => { if(reverbNode) reverbNode.gain.value = v; } }
+        ];
+
+        items.forEach(c => {
+            const knob = document.getElementById(`k-${c.id}`);
+            const fader = document.getElementById(`f-${c.id}`);
+            let isD = false, lastY = 0;
+            let accumulatedValue = settings[c.key];
+
+            const handleMove = (e) => {
+                if (!isD) return;
+                const y = e.touches ? e.touches[0].clientY : e.clientY;
+                const sensitivity = (c.max - c.min) / 180;
+                accumulatedValue += (lastY - y) * sensitivity;
+                accumulatedValue = Math.max(c.min, Math.min(c.max, accumulatedValue));
+                lastY = y;
+                const steps = 20;
+                const currentSnap = Math.round(((settings[c.key] - c.min) / (c.max - c.min)) * steps);
+                const targetSnap = Math.round(((accumulatedValue - c.min) / (c.max - c.min)) * steps);
+                if (currentSnap !== targetSnap) {
+                    playHapticTick('detent');
+                    settings[c.key] = c.min + (targetSnap / steps) * (c.max - c.min);
+                    updateAllUI(); c.act(settings[c.key]);
+                }
+            };
+
+            const start = (e) => { 
+                initAudio();
+                isD = true; lastY = e.touches ? e.touches[0].clientY : e.clientY; 
+                accumulatedValue = settings[c.key]; e.preventDefault(); 
+            };
+            [knob, fader].forEach(el => {
+                el.addEventListener('mousedown', start); el.addEventListener('touchstart', start, {passive:false});
+            });
+            window.addEventListener('mousemove', handleMove); window.addEventListener('touchmove', handleMove, {passive:false});
+            window.addEventListener('mouseup', () => isD = false); window.addEventListener('touchend', () => isD = false);
+        });
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.repeat) return; const n = KEY_MAP[e.key.toLowerCase()];
+        if (n) { playNote(n); const el = document.querySelector(`[data-note="${n}"]`); if(el) el.classList.add('active'); }
+    });
+    document.addEventListener('keyup', e => {
+        const n = KEY_MAP[e.key.toLowerCase()];
+        if (n) { stopNote(n); const el = document.querySelector(`[data-note="${n}"]`); if(el) el.classList.remove('active'); }
+    });
+
+    window.onload = () => { buildKeys(); setupControls(); updateAllUI(); };
+</script>
+</body>
+</html>
