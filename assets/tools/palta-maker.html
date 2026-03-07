@@ -122,6 +122,66 @@
         }
         .kbd-ctrl { width: auto; padding: 0 12px; font-size: 13px; color: #c0392b; height: 36px;}
 
+        /* Guide Section */
+        .guide-container {
+            background-color: #e0e5ec;
+            border-radius: 12px;
+            box-shadow: inset 4px 4px 8px rgba(163,177,198, 0.5), inset -4px -4px 8px rgba(255,255,255, 0.8);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .guide-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .guide-toggle {
+            font-size: 20px;
+            color: #7f8c8d;
+            transition: transform 0.3s ease;
+        }
+
+        .guide-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding-top: 0;
+        }
+
+        .guide-content.expanded {
+            max-height: 500px;
+            padding-top: 15px;
+        }
+
+        .guide-step {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid #3498db;
+        }
+
+        .guide-step h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .guide-step p {
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
         .copyright { text-align: center; font-size: 12px; color: #7f8c8d; margin-top: 20px; }
 
         /* Responsive */
@@ -136,6 +196,36 @@
 
 <div class="main-box">
     <h2>🎶 Alankar / Palta Maker 🎶</h2>
+
+    <!-- Guide Section -->
+    <div class="guide-container">
+        <div class="guide-header" onclick="toggleGuide()">
+            <div class="guide-title">📘 How to Use This Tool</div>
+            <div class="guide-toggle" id="guideToggle">+</div>
+        </div>
+        <div class="guide-content" id="guideContent">
+            <div class="guide-step">
+                <h4>1. Select or Enter a Scale</h4>
+                <p>Choose a preset raga from the <strong>Presets</strong> dropdown or manually enter the <strong>Aaroh (ascending)</strong> and <strong>Avroh (descending)</strong> scale notes in the input fields.</p>
+            </div>
+            <div class="guide-step">
+                <h4>2. Define a Pattern</h4>
+                <p>Enter a numeric sequence (e.g., <code>1234</code>) or a sequence of swaras (e.g., <code>S G R</code>) in the <strong>Pattern</strong> field. This defines the order of notes for your Alankar/Palta.</p>
+            </div>
+            <div class="guide-step">
+                <h4>3. Use the Swara Keyboard</h4>
+                <p>Click on the on-screen keyboard to insert special swaras, flats, sharps, and diacritics into any input field. Use <strong>Back</strong>, <strong>Clear</strong>, or <strong>Space</strong> buttons to edit the input conveniently.</p>
+            </div>
+            <div class="guide-step">
+                <h4>4. Generate Alankar</h4>
+                <p>Press the <strong>✨ Generate Alankar ✨</strong> button to produce the full ascending (Aaroh) and descending (Avroh) sequences based on your pattern and scale. The output appears in the large textarea.</p>
+            </div>
+            <div class="guide-step">
+                <h4>5. Copy or Save Output</h4>
+                <p>Click <strong>📋 Copy Output</strong> to copy the generated Alankar to your clipboard for easy use in teaching, practice, or documentation.</p>
+            </div>
+        </div>
+    </div>
 
     <div class="layout-container">
         <div class="left-panel">
@@ -173,6 +263,17 @@
 </div>
 
 <script>
+    // ==========================================
+    // 0. GUIDE TOGGLE FUNCTIONALITY
+    // ==========================================
+    function toggleGuide() {
+        const content = document.getElementById('guideContent');
+        const toggle = document.getElementById('guideToggle');
+        
+        content.classList.toggle('expanded');
+        toggle.textContent = content.classList.contains('expanded') ? '−' : '+';
+    }
+
     // ==========================================
     // 1. DATA DICTIONARIES
     // ==========================================
