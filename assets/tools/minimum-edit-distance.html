@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Edit Distance – DP Cost Matrix Generator</title>
+    <style>
+        :root {
+            --bg: #e0e5ec;
+            --shadow-dark: #a3b1c6;
+            --shadow-light: #ffffff;
+            --accent: #082567;
+            --pointer: #3498db;
+            --teal-light: #20b2aa;
+            --teal-medium: #17a697;
+            --teal-deep: #0d7f7a;
+            --teal-glossy: #48d1cc;
+            
+            /* Traceable Path Highlight Palette */
+            --path-bg: #d4eaff; 
+            --path-shadow-dark: #a5bedd;
+            --path-highlight: #0d47a1;
+        }
+
+        .group-string { --pointer: #3498db; }  
+        .group-costs { --pointer: #9b59b6; }   
+        .group-results { --pointer: #2ecc71; } 
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background-color: var(--bg); 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 30px 20px; 
+            color: #333; 
+            overflow-x: hidden;
+        }
+
+        header { 
+            text-align: center; 
+            margin-bottom: 25px; 
+        }
+
+        h1 { 
+            font-size: clamp(1.8rem, 5vw, 2.5rem); 
+            color: #2c3e50; 
+            font-weight: 800; 
+            letter-spacing: -1px; 
+            margin-bottom: 4px; 
+        }
+
+        .header-hint { 
+            font-size: 13px; 
+            color: #7f8c8d; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+        }
+
+        .main-box { 
+            background-color: var(--bg); 
+            padding: clamp(20px, 4vw, 35px) clamp(15px, 3vw, 30px); 
+            border-radius: 20px; 
+            box-shadow: 15px 15px 30px rgba(163,177,198,0.5), -15px -15px 30px rgba(255,255,255,0.8); 
+            max-width: 1200px; 
+            width: 100%; 
+            margin-bottom: 30px;
+        }
+
+        /* Neumorphic Form Elements */
+        .input-row { 
+            display: flex; 
+            gap: clamp(15px, 3vw, 25px); 
+            margin-bottom: 25px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+
+        .field-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            flex: 1 1 160px;
+            min-width: 140px;
+            max-width: 320px;
+        }
+
+        .field-group label { 
+            font-size: 11px; 
+            font-weight: 800; 
+            color: var(--pointer); 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            padding-left: 5px;
+        }
+
+        input { 
+            background-color: var(--bg); 
+            border: none; 
+            border-radius: 12px; 
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); 
+            padding: 14px 18px; 
+            color: #333; 
+            font-weight: 700; 
+            font-size: clamp(13px, 2vw, 14px); 
+            outline: none; 
+            width: 100%;
+        }
+
+        input[type="text"] {
+            text-transform: uppercase;
+        }
+        
+        input::placeholder { 
+            color: #9aaabf; 
+            font-weight: 600; 
+            text-transform: none; 
+        }
+
+        /* Neumorphic Buttons */
+        .btn-group { 
+            display: flex; 
+            gap: clamp(15px, 3vw, 20px); 
+            justify-content: center; 
+            margin-top: 25px; 
+            flex-wrap: wrap;
+        }
+        
+        button { 
+            background-color: var(--bg); 
+            border: none; 
+            border-radius: 14px; 
+            padding: 16px clamp(20px, 4vw, 32px);
+            box-shadow: 6px 6px 12px rgba(163,177,198,0.6), -6px -6px 12px var(--shadow-light); 
+            font-weight: 800; 
+            color: var(--accent); 
+            transition: all 0.2s ease; 
+            cursor: pointer; 
+            text-transform: uppercase;
+            font-size: clamp(11px, 2vw, 12px);
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            min-width: 140px;
+            flex: 0 1 auto;
+        }
+
+        button:active { 
+            box-shadow: inset 4px 4px 8px rgba(163,177,198,0.7), inset -4px -4px 8px var(--shadow-light); 
+            transform: scale(0.97);
+        }
+
+        /* ========== UNIFIED RESPONSIVE MATRIX CONTAINER ========== */
+        .matrix-console { 
+            background: var(--bg); 
+            border-radius: 20px; 
+            box-shadow: inset 5px 5px 12px var(--shadow-dark), inset -5px -5px 12px var(--shadow-light); 
+            padding: clamp(20px, 3vw, 30px);
+            margin-top: 35px; 
+            width: 100%;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            /* Unified responsive container behavior */
+            max-width: 100%;
+        }
+
+        .matrix-title { 
+            font-size: clamp(12px, 2vw, 14px); 
+            font-weight: 800; 
+            color: var(--accent); 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin-bottom: clamp(15px, 2vw, 25px); 
+            text-align: center;
+            width: 100%;
+        }
+
+        /* ========== SCALER CONTAINER (UNIFIED UNIT) ========== */
+        .table-scaler-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-height: 0;
+            margin-bottom: clamp(15px, 2vw, 25px);
+        }
+
+        .scale-wrapper {
+            transform-origin: center top;
+            width: max-content;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        /* ========== TABLE STYLING WITH 3D LABEL BUTTONS ========== */
+        .med-table {
+            border-collapse: separate;
+            border-spacing: clamp(8px, 1.5vw, 12px);
+            margin: 0 auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            display: table;
+        }
+
+        .med-table td {
+            min-width: clamp(50px, 8vw, 70px);
+            height: clamp(50px, 8vw, 70px);
+            border-radius: 12px;
+            background: var(--bg);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            position: relative;
+            padding: clamp(4px, 1vw, 6px);
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .cell-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            gap: clamp(2px, 0.5vw, 4px);
+        }
+
+        /* ========== 3D TEAL BOX-STYLE LABEL BUTTONS WITH GLOSSY ANIMATION ========== */
+        .med-table .header-cell {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--teal-light) 0%, var(--teal-medium) 50%, var(--teal-deep) 100%);
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.4),
+                inset -2px -2px 5px rgba(0,0,0,0.2),
+                4px 4px 12px rgba(13, 127, 122, 0.4),
+                -2px -2px 6px rgba(255,255,255,0.8),
+                0px 0px 20px rgba(32, 178, 170, 0.2);
+            font-size: clamp(14px, 2.5vw, 20px);
+            font-weight: 800;
+            text-align: center;
+            vertical-align: middle;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Glossy Shine Animation */
+        .med-table .header-cell::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 100%
+            );
+            animation: glossShine 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes glossShine {
+            0% {
+                top: -50%;
+                left: -50%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                top: 150%;
+                left: 150%;
+                opacity: 0;
+            }
+        }
+
+        /* Hover effect for header cells */
+        .med-table .header-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.4),
+                inset -2px -2px 5px rgba(0,0,0,0.2),
+                6px 6px 16px rgba(13, 127, 122, 0.5),
+                -3px -3px 8px rgba(255,255,255,0.9),
+                0px 0px 25px rgba(72, 209, 204, 0.4);
+        }
+
+        /* Light Blue Traceable Path */
+        .path-active {
+            background-color: var(--path-bg) !important;
+            box-shadow: inset 4px 4px 8px var(--path-shadow-dark), inset -4px -4px 8px #ffffff !important;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .path-active .main-val { 
+            color: var(--path-highlight); 
+            font-weight: 900; 
+        }
+
+        .path-active .arrow { 
+            color: var(--path-highlight); 
+            font-weight: 1000;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .path-active .candidate { 
+            color: #5a7b9e; 
+            font-weight: 700; 
+        }
+
+        .candidate {
+            font-size: clamp(8px, 1.2vw, 10px);
+            color: #888;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+        }
+
+        .main-val {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(3px, 0.8vw, 6px);
+            font-size: clamp(12px, 2vw, 16px);
+            font-weight: 800;
+            color: #444;
+            white-space: nowrap;
+        }
+
+        /* ========== ENHANCED ARROW STYLING ========== */
+        .arrow { 
+            font-size: clamp(14px, 2.2vw, 18px); 
+            font-weight: 1000;
+            color: #222;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        /* ========== FINAL EDIT DISTANCE STYLED BAR WITH GLOSSY ANIMATION ========== */
+        .dist-badge {
+            width: 100%;
+            padding: clamp(12px, 2vw, 18px) clamp(15px, 3vw, 25px);
+            text-align: center;
+            font-weight: 800;
+            color: #ffffff;
+            background: linear-gradient(90deg, var(--teal-light) 0%, var(--teal-medium) 50%, var(--teal-deep) 100%);
+            font-size: clamp(14px, 2.5vw, 18px);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-radius: 12px;
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.3),
+                inset -2px -2px 5px rgba(0,0,0,0.2),
+                4px 4px 12px rgba(13, 127, 122, 0.4),
+                -2px -2px 6px rgba(255,255,255,0.8),
+                0px 0px 20px rgba(32, 178, 170, 0.2);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Glossy Shine Animation for Distance Badge */
+        .dist-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 100%
+            );
+            animation: glossShine 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        /* Hover effect for distance badge */
+        .dist-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.3),
+                inset -2px -2px 5px rgba(0,0,0,0.2),
+                6px 6px 16px rgba(13, 127, 122, 0.5),
+                -3px -3px 8px rgba(255,255,255,0.9),
+                0px 0px 25px rgba(72, 209, 204, 0.4);
+        }
+
+        .copyright { 
+            text-align: center; 
+            font-size: 12px; 
+            color: #7f8c8d; 
+            margin-top: 40px; 
+        }
+
+        /* ========== RESPONSIVE ADJUSTMENTS ========== */
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .field-group {
+                flex: 1 1 100%;
+                max-width: none;
+                min-width: auto;
+            }
+
+            button {
+                flex: 1 1 auto;
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                margin-bottom: 20px;
+            }
+
+            .main-box {
+                padding: 15px 12px;
+            }
+
+            .input-row {
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+
+            .btn-group {
+                gap: 10px;
+            }
+
+            button {
+                padding: 12px 16px;
+                font-size: 11px;
+                min-width: 100px;
+            }
+
+            .matrix-console {
+                padding: 15px 10px;
+                min-height: 250px;
+            }
+
+            .med-table {
+                border-spacing: 6px;
+            }
+
+            .med-table td {
+                min-width: 45px;
+                height: 45px;
+                padding: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Minimum Edit Distance – DP Cost Matrix Generator</h1>
+    <div class="header-hint">(Jurafsky Style)</div>
+</header>
+
+<div class="main-box">
+    <div class="input-row group-string">
+        <div class="field-group">
+            <label>Source String</label>
+            <input type="text" id="src" placeholder="(e.g., INTENTION)">
+        </div>
+        <div class="field-group">
+            <label>Target String</label>
+            <input type="text" id="tgt" placeholder="(e.g., EXECUTION)">
+        </div>
+    </div>
+
+    <div class="input-row group-costs">
+        <div class="field-group">
+            <label>Insert Cost</label>
+            <input type="number" id="ins" value="1">
+        </div>
+        <div class="field-group">
+            <label>Delete Cost</label>
+            <input type="number" id="del" value="1">
+        </div>
+        <div class="field-group">
+            <label>Sub Cost</label>
+            <input type="number" id="sub" value="2">
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button onclick="calculateMED()">Generate Matrix</button>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <div id="matrix-out" class="group-results"></div>
+</div>
+
+<div class="copyright">&copy; Sai Sudeep Das (2026)</div>
+
+<script>
+    function calculateMED() {
+        const s = document.getElementById('src').value.toUpperCase();
+        const t = document.getElementById('tgt').value.toUpperCase();
+        
+        const ic = parseInt(document.getElementById('ins').value);
+        const dc = parseInt(document.getElementById('del').value);
+        const sc = parseInt(document.getElementById('sub').value);
+
+        if(!s || !t) return;
+
+        const m = s.length, n = t.length;
+        let D = Array.from({length: m+1}, () => Array(n+1).fill(0));
+        let candidates = {};
+
+        // DP Initialization
+        for(let j=1; j<=n; j++) D[0][j] = D[0][j-1] + ic;
+        for(let i=1; i<=m; i++) D[i][0] = D[i-1][0] + dc;
+
+        // DP Fill
+        for(let i=1; i<=m; i++){
+            for(let j=1; j<=n; j++){
+                let cost = (s[i-1] === t[j-1]) ? 0 : sc;
+                let l = D[i][j-1] + ic;
+                let u = D[i-1][j] + dc;
+                let d = D[i-1][j-1] + cost;
+                
+                D[i][j] = Math.min(l, u, d);
+                candidates[`${i},${j}`] = `${l},${u},${d}`;
+            }
+        }
+
+        // Trace Optimal Path & Generate Arrows
+        let path = new Set();
+        let arrows = {};
+        let i = m, j = n;
+        
+        while(i > 0 || j > 0) {
+            path.add(`${i},${j}`);
+            if (i === 0) { 
+                arrows[`${i},${j-1}`] = '→'; j--; 
+            } else if (j === 0) { 
+                arrows[`${i-1},${j}`] = '↑'; i--; 
+            } else {
+                let cost = (s[i-1] === t[j-1]) ? 0 : sc;
+                let left = D[i][j-1] + ic;
+                let up = D[i-1][j] + dc;
+                let diag = D[i-1][j-1] + cost;
+                let best = Math.min(left, up, diag);
+                
+                if (best === diag) { 
+                    arrows[`${i-1},${j-1}`] = '↗'; 
+                    i--; j--; 
+                } else if (best === up) { 
+                    arrows[`${i-1},${j}`] = '↑'; 
+                    i--; 
+                } else { 
+                    arrows[`${i},${j-1}`] = '→'; 
+                    j--; 
+                }
+            }
+        }
+        path.add("0,0");
+
+        // Render Unified Responsive Container
+        let html = `
+        <div class="matrix-console" id="render-console">
+            <div class="matrix-title">Dynamic Programming Matrix</div>
+            
+            <div class="table-scaler-container" id="scaler-container">
+                <div class="scale-wrapper" id="scale-wrap">
+                    <table class="med-table">`;
+        
+        for(let r=m; r>=0; r--) {
+            html += `<tr><td class="header-cell">${r ? s[r-1] : '#'}</td>`;
+            for(let c=0; c<=n; c++) {
+                const isP = path.has(`${r},${c}`);
+                const cand = candidates[`${r},${c}`];
+                const arr = arrows[`${r},${c}`] || '';
+                
+                html += `<td class="${isP ? 'path-active' : ''}">
+                    <div class="cell-content">
+                        ${cand ? `<span class="candidate">(${cand})</span>` : ''}
+                        <div class="main-val"><span>${D[r][c]}</span> <span class="arrow">${arr}</span></div>
+                    </div>
+                </td>`;
+            }
+            html += `</tr>`;
+        }
+        
+        // Bottom header row
+        html += `<tr><td class="header-cell"></td><td class="header-cell">#</td>`;
+        for(let c=0; c<n; c++) html += `<td class="header-cell">${t[c]}</td>`;
+        html += `</tr>`;
+        
+        html += `   </table>
+                </div>
+            </div>
+            
+            <div class="dist-badge">Final Edit Distance: ${D[m][n]}</div>
+        </div>`;
+        
+        document.getElementById('matrix-out').innerHTML = html;
+        
+        requestAnimationFrame(adjustMatrixScale);
+    }
+
+    function clearConsole() {
+        document.getElementById('matrix-out').innerHTML = '';
+    }
+
+    // Dynamic Auto-Scaler: Scales entire matrix container as one unified unit
+    function adjustMatrixScale() {
+        const container = document.getElementById('scaler-container');
+        const wrapper = document.getElementById('scale-wrap');
+        const console = document.getElementById('render-console');
+        
+        if(!container || !wrapper || !console) return;
+        
+        // Reset to natural size for measurement
+        wrapper.style.transform = 'scale(1)';
+        
+        const containerWidth = container.clientWidth;
+        const wrapperWidth = wrapper.offsetWidth;
+        
+        // Calculate scale factor if table exceeds container width
+        if(wrapperWidth > containerWidth) {
+            const scale = (containerWidth * 0.95) / wrapperWidth; // 95% to add margin
+            wrapper.style.transform = `scale(${scale})`;
+            
+            // Adjust container height to prevent overlap with distance badge
+            const scaledHeight = wrapper.offsetHeight * scale;
+            container.style.height = `${scaledHeight}px`;
+        } else {
+            wrapper.style.transform = 'scale(1)';
+            container.style.height = 'auto';
+        }
+    }
+
+    // Re-trigger scaling on window resize
+    window.addEventListener('resize', () => {
+        requestAnimationFrame(adjustMatrixScale);
+    });
+
+    // Handle orientation changes on mobile
+    window.addEventListener('orientationchange', () => {
+        setTimeout(adjustMatrixScale, 100);
+    });
+</script>
+</body>
+</html>
