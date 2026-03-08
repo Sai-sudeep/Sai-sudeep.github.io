@@ -45,6 +45,18 @@ permalink: /tools/
   </div>
 
   <div class="tool-card" data-category="nlp">
+    <div class="tool-icon">📊</div>
+    <div class="tool-info">
+      <h3>Minimum Edit Distance – DP Cost Matrix Generator</h3>
+      <p>Visualize the dynamic programming cost matrix for computing minimum edit distance (Levenshtein distance). Includes optimal path tracing and step-by-step cost breakdown in Jurafsky style.</p>
+    </div>
+    <div class="tool-actions">
+      <button class="tool-btn tool-btn-preview" onclick="openTool('minimum-edit-distance')">👁️ Preview Here</button>
+      <a class="tool-btn tool-btn-newpage" href="/assets/tools/minimum-edit-distance.html" target="_blank">↗ Open in New Page</a>
+    </div>
+  </div>
+
+  <div class="tool-card" data-category="nlp">
     <div class="tool-icon">🎮</div>
     <div class="tool-info">
       <h3>WORDLE Regex Solver</h3>
@@ -267,6 +279,10 @@ var tools = {
   'palta-maker': {
     title: '🎵 Alankar / Palta Maker',
     src: '/assets/tools/palta-maker.html'
+  },
+  'minimum-edit-distance': {
+    title: '📊 Minimum Edit Distance – DP Cost Matrix Generator',
+    src: '/assets/tools/minimum-edit-distance.html'
   },
   'wordle-regex-solver': {
     title: '🎮 WORDLE Regex Solver',
